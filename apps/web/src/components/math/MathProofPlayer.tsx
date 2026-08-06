@@ -1,75 +1,56 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Play, Pause, ListTree } from "lucide-react";
-import { FULL_PROOF, ALL_EQUATIONS, type ProofCard } from "@/lib/proof-content";
+import { useEffect, useState } from "react";
+import { Play, Pause, ListTree, ChevronDown, ChevronUp, Check } from "lucide-react";
+import { FULL_PROOF, ALL_EQUATIONS } from "@/lib/proof-content";
 
-const STEP_MS = 5200;
+const PRE_STEP_DELAY = 480; // pause before the pencil touches down on a new step
+const PUNCT_DELAY = 165; // pause after operators/brackets — "thinking" beats
+const CHAR_DELAY = 24;
+const HOLD_AFTER_WRITE = 2000; // how long the finished equation sits before advancing
 
-function CardView({ card, active, onClick, setRef }: {
-  card: ProofCard;
-  active: boolean;
-  onClick: () => void;
-  setRef: (el: HTMLDivElement | null) => void;
-}) {
-  const isAxiom = card.kind === "axiom";
-  return (
-    <div
-      ref={setRef}
-      onClick={onClick}
-      className={`cursor-pointer rounded-xl border p-4 transition ${
-        active
-          ? "border-violet bg-violet-soft/40"
-          : "border-line bg-paper-raised hover:border-violet/40"
-      }`}
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        <span
-          className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-            isAxiom ? "bg-ember-soft text-ember" : "bg-violet-soft text-violet-strong"
-          }`}
-        >
-          {isAxiom ? `Axiom ${card.n}` : `Step ${card.n}`}
-        </span>
-        {card.equationLabel && (
-          <span className="font-mono text-[11px] text-ink-soft">{card.equationLabel}</span>
-        )}
-      </div>
-      <p className="mt-2 text-sm font-semibold text-ink">{card.title}</p>
-      <p className="mt-2 overflow-x-auto whitespace-pre-wrap break-words font-mono text-[13px] leading-relaxed text-ink">
-        {card.equation}
-      </p>
-      <p className="mt-2.5 text-sm leading-relaxed text-ink-soft">{card.explanation}</p>
-    </div>
-  );
+function delayForChar(ch: string) {
+  if (/[=+\-−·()[\]{}]/.test(ch)) return PUNCT_DELAY;
+  if (ch === " ") return CHAR_DELAY + 18;
+  return CHAR_DELAY;
 }
 
 export function MathProofPlayer() {
   const [mode, setMode] = useState<"proof" | "equations">("proof");
   const [playing, setPlaying] = useState(true);
   const [idx, setIdx] = useState(0);
-  const refs = useRef<(HTMLDivElement | null)[]>([]);
+  const [writeCount, setWriteCount] = useState(0);
+  const [expanded, setExpanded] = useState(false);
 
+  const active = FULL_PROOF[idx];
+  const finished = writeCount >= active.equation.length;
+
+  // the single engine: types the current equation one character at a time,
+  // then holds, then advances — all gated on `playing`
   useEffect(() => {
     if (mode !== "proof" || !playing) return;
-    const t = setInterval(() => {
+    if (!finished) {
+      const delay = writeCount === 0 ? PRE_STEP_DELAY : delayForChar(active.equation[writeCount - 1]);
+      const t = setTimeout(() => setWriteCount((c) => c + 1), delay);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => {
       setIdx((i) => (i + 1) % FULL_PROOF.length);
-    }, STEP_MS);
-    return () => clearInterval(t);
-  }, [mode, playing]);
-
-  useEffect(() => {
-    if (mode !== "proof") return;
-    refs.current[idx]?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [idx, mode]);
+      setWriteCount(0);
+      setExpanded(false);
+    }, HOLD_AFTER_WRITE);
+    return () => clearTimeout(t);
+  }, [mode, playing, writeCount, finished, active.equation]);
 
   function goTo(i: number) {
+    setMode("proof");
     setIdx(i);
+    setWriteCount(FULL_PROOF[i].equation.length); // land fully written — inspect, don't wait
     setPlaying(false);
+    setExpanded(false);
   }
 
   const axiomCount = FULL_PROOF.filter((c) => c.kind === "axiom").length;
-  const active = FULL_PROOF[idx];
   const posLabel =
     active.kind === "axiom" ? `Axiom ${active.n} of ${axiomCount}` : `Step ${active.n} of ${FULL_PROOF.length - axiomCount}`;
 
@@ -78,15 +59,15 @@ export function MathProofPlayer() {
     return acc;
   }, {});
 
+  const isAxiom = active.kind === "axiom";
+
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-line bg-paper-raised p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-violet-strong">
-          {mode === "proof"
-            ? "Full proof, from first principles — the paper's End Matter"
-            : "Every key equation — in the paper's own order"}
+          {mode === "proof" ? "Live derivation — from first principles" : "Every key equation — in the paper's own order"}
         </p>
-        <div className="flex items-center gap-2 rounded-full border border-line bg-paper p-1">
+        <div className="flex items-center gap-1 rounded-full border border-line bg-paper p-1">
           <button
             onClick={() => {
               setMode("proof");
@@ -128,13 +109,6 @@ export function MathProofPlayer() {
 
       {mode === "proof" ? (
         <>
-          <p className="text-xs leading-relaxed text-ink-soft">
-            Starts from three postulates (axioms), then derives everything else in order —
-            equation by equation, exactly as the paper does it. Playing auto-advances and scrolls;
-            hit pause (or click any card, or scroll yourself) to read at your own pace — it keeps
-            your place either way.
-          </p>
-
           <div className="flex items-center gap-1.5">
             {FULL_PROOF.map((c, i) => (
               <button
@@ -149,18 +123,74 @@ export function MathProofPlayer() {
           </div>
           <span className="-mt-2 self-end font-mono text-[11px] text-ink-soft">{posLabel}</span>
 
-          <div className="flex max-h-[32rem] flex-col gap-3 overflow-y-auto pr-1">
-            {FULL_PROOF.map((c, i) => (
-              <CardView
-                key={`${c.kind}-${c.n}`}
-                card={c}
-                active={i === idx}
-                onClick={() => goTo(i)}
-                setRef={(el) => {
-                  refs.current[i] = el;
-                }}
-              />
-            ))}
+          {idx > 0 && (
+            <div className="flex flex-col gap-0.5 border-l-2 border-line pl-3">
+              {FULL_PROOF.slice(0, idx).map((c, i) => (
+                <button
+                  key={`${c.kind}-${c.n}`}
+                  onClick={() => goTo(i)}
+                  className="flex items-center gap-2 py-0.5 text-left text-xs text-ink-soft transition hover:text-ink"
+                >
+                  <Check size={11} className="shrink-0 text-violet-strong" />
+                  <span className="truncate">
+                    {c.kind === "axiom" ? `Axiom ${c.n}` : `Step ${c.n}`} — {c.title}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div
+            className={`flex flex-col gap-3 rounded-xl border-2 p-4 transition-colors ${
+              isAxiom ? "border-ember/40" : "border-violet/40"
+            }`}
+          >
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                  isAxiom ? "bg-ember-soft text-ember" : "bg-violet-soft text-violet-strong"
+                }`}
+              >
+                {isAxiom ? `Axiom ${active.n}` : `Step ${active.n}`}
+              </span>
+              {active.equationLabel && (
+                <span className="font-mono text-[11px] text-ink-soft">{active.equationLabel}</span>
+              )}
+            </div>
+            <p className="text-sm font-semibold text-ink">{active.title}</p>
+
+            {/* the blackboard */}
+            <div className="min-h-[4.5rem] rounded-lg bg-[#16241c] p-4 shadow-inner">
+              <p
+                className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-[15px] leading-relaxed text-[#eef6ea]"
+                style={{ textShadow: "0 0 5px rgba(238,246,234,0.35)" }}
+              >
+                {active.equation.slice(0, writeCount)}
+                {!finished && (
+                  <span
+                    className="ml-0.5 inline-block w-[2px] animate-pulse bg-[#eef6ea] align-middle"
+                    style={{ height: "1em" }}
+                  />
+                )}
+              </p>
+            </div>
+
+            <p className="text-sm leading-relaxed text-ink-soft">{active.short}</p>
+            <button
+              onClick={() => setExpanded((e) => !e)}
+              className="flex w-fit items-center gap-1 text-xs font-medium text-violet-strong hover:underline"
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp size={12} /> Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={12} /> More
+                </>
+              )}
+            </button>
+            {expanded && <p className="text-sm leading-relaxed text-ink-soft">{active.explanation}</p>}
           </div>
         </>
       ) : (

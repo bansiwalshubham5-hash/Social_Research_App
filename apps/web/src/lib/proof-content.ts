@@ -4,7 +4,8 @@ export interface ProofCard {
   title: string;
   equation: string;
   equationLabel?: string; // e.g. "eq. (22)"
-  explanation: string;
+  short: string; // one or two lines — the default, minimal-text reason
+  explanation: string; // full reasoning, shown behind a "More" toggle
 }
 
 // The complete derivation from the paper's End Matter ("Derivation of Bethe
@@ -19,6 +20,7 @@ export const AXIOMS: ProofCard[] = [
     title: "Two-body factorized scattering",
     equationLabel: "eq. (22)–(23)",
     equation: "S^{j0₁} = (I − ice^{iφ}P)/(1 − ice^{iφ})      S^{j0₂} = (I − ice^{−iφ}P)/(1 − ice^{−iφ})",
+    short: "Postulate: each impurity gets a fixed 2-body S-matrix; impurity 2's is the conjugate of impurity 1's — PT symmetry starts here.",
     explanation:
       "Postulate (quantum inverse scattering): when a conduction electron scatters off an impurity in isolation, the process is captured by a single S-matrix acting on their combined spin space. P permutes the two spins; c and φ package the coupling λ = |λ|e^{iφ}. Impurity 2's S-matrix uses the complex-conjugate phase, exactly as its coupling λ* in the Hamiltonian demands — the PT symmetry is already visible here, before any calculation.",
   },
@@ -28,6 +30,7 @@ export const AXIOMS: ProofCard[] = [
     title: "Single-valuedness around the ring",
     equationLabel: "eq. (24)",
     equation: "(S^{jj−1}⋯S^{J0₁}⋯S^{j1}S^{jN}⋯S^{J0₂}⋯S^{jj+1}) e^{ik_jL} = 1",
+    short: "Postulate: the wavefunction must return to itself after one trip around the ring — this glues every scattering event together.",
     explanation:
       "Postulate (periodicity): the many-electron wavefunction must return to itself after any one electron travels once around the ring of circumference L, scattering elastically off every other electron (electron–electron scattering is simply the permutation S^{ij}=P) and both impurities along the way. This single physical requirement is what turns a collection of individual two-body scattering events into one connected algebraic system.",
   },
@@ -38,6 +41,7 @@ export const AXIOMS: ProofCard[] = [
     equationLabel: "eq. (25)–(26)",
     equation:
       "S(u) = (uI + icP)/(u + ic)      S^{kj}(u−v)S^{ki}(u)S^{ji}(v) = S^{ji}(v)S^{ki}(u)S^{kj}(u−v)",
+    short: "Postulate: a continuous S(u) must satisfy Yang–Baxter — the one condition that makes a model exactly solvable.",
     explanation:
       "Postulate: introduce a continuous spectral parameter u and build a single S-matrix S(u) that reproduces every physical scattering event above at specific values (u=1 for electron–electron, u=0 for impurity 1, u=1−e^{2iφ} for impurity 2), then require it to satisfy the Yang–Baxter equation — the defining consistency condition for any exactly solvable, factorized-scattering theory: three particles scattering pairwise must give the same answer regardless of the order. Everything from here on is a proven consequence of these three postulates holding for this specific model — not a further assumption.",
   },
@@ -50,6 +54,7 @@ export const PROOF_STEPS: ProofCard[] = [
     title: "The monodromy matrix",
     equationLabel: "eq. (27)",
     equation: "Ξ(u) = ∏_{y=1}^{N} S^{ya}(u − u_y)",
+    short: "Scatter an auxiliary particle through everyone, multiply the results — packages periodicity into one matrix.",
     explanation:
       "Introduce one fictitious \"auxiliary\" particle and scatter it through every real particle in the system in turn, multiplying the results together. Ξ(u) packages the entire periodicity condition from Axiom 2 into a single operator-valued object.",
   },
@@ -59,6 +64,7 @@ export const PROOF_STEPS: ProofCard[] = [
     title: "The transfer matrix",
     equationLabel: "eq. (28)",
     equation: "T(u) ≡ Tr_a Ξ(u) = S^{jj−1}(u−u_{j−1}) ⋯ S^{j1}(u−u_1) S^{jN}(u−u_N) ⋯ S^{jj+1}(u−u_{j+1})",
+    short: "Trace out the auxiliary space — this operator will hide infinitely many conserved quantities.",
     explanation:
       "Trace the monodromy matrix over the auxiliary space. This produces a single operator T(u) that, evaluated at different u, will turn out to encode infinitely many mutually-commuting conserved quantities — the algebraic signature of exact solvability.",
   },
@@ -68,6 +74,7 @@ export const PROOF_STEPS: ProofCard[] = [
     title: "The R-matrix",
     equationLabel: "eq. (29)",
     equation: "R = S(u−v)P = [(u−v)P + icI] / [(u−v) + ic]",
+    short: "Rewrite S(u−v) with a permutation — pure bookkeeping for the next step.",
     explanation:
       "Repackage S(u−v) with an extra permutation. This is purely bookkeeping — it lets the Yang–Baxter equation from Axiom 3 be rewritten in the standard \"RTT\" form used throughout integrable systems.",
   },
@@ -77,6 +84,7 @@ export const PROOF_STEPS: ProofCard[] = [
     title: "Yang–Baxter, rewritten as an RTT relation",
     equationLabel: "eq. (30)",
     equation: "R^{s,t}_{p,w} S(u)^{d,q}_{a,s} S(v)^{b,z}_{d,t} = S(v)^{c,s'}_{a,p} S(u)^{b,t'}_{c,w} R^{q,z}_{s',t'}",
+    short: "Yang–Baxter, in the standard R-matrix (RTT) form.",
     explanation:
       "Axiom 3's Yang–Baxter equation, expressed using the R-matrix from Step 3. This is exactly the same statement as eq. (26) — just written in the index notation needed for the next step.",
   },
@@ -86,6 +94,7 @@ export const PROOF_STEPS: ProofCard[] = [
     title: "Lifting RTT to the monodromy matrix",
     equationLabel: "eq. (31)–(32)",
     equation: "R^{s,t}_{p,w} Ξ(u)^{q}_{s} Ξ(v)^{z}_{t} = Ξ(v)^{s'}_{p} Ξ(u)^{t'}_{w} R^{q,z}_{s',t'}",
+    short: "The same RTT relation lifts from two particles to the whole monodromy matrix.",
     explanation:
       "Because the monodromy matrix Ξ(u) is just a product of copies of S(u) (Step 1), repeated application of the RTT relation shows the exact same relation holds for Ξ itself — the algebra propagates from two particles to all N of them.",
   },
@@ -95,6 +104,7 @@ export const PROOF_STEPS: ProofCard[] = [
     title: "Proving integrability",
     equationLabel: "eq. (33)",
     equation: "[T(u), T(v)] = 0",
+    short: "Trace it — the R-matrices cancel, leaving T(u) and T(v) commuting. Solvability, proved.",
     explanation:
       "Trace the relation from Step 5 over the auxiliary space; the R-matrices on both sides are invertible and cancel, leaving T(u) and T(v) commuting for every u and v. This is the actual, rigorous proof that the model is exactly solvable — an infinite tower of conserved quantities. Everything after this is \"just\" diagonalizing T(u).",
   },
@@ -105,6 +115,7 @@ export const PROOF_STEPS: ProofCard[] = [
     equationLabel: "eq. (34)–(35)",
     equation:
       "e^{ik_jL} = ∏_{γ=1}^{M} (Λᵧ−1+ice^{iφ}/2)/(Λᵧ−1−ice^{iφ}/2)   ·   −∏_{δ=1}^{M} (Λδ−Λᵧ+ice^{iφ})/(Λδ−Λᵧ−ice^{iφ}) = (…)^{Ne}(…)(…)",
+    short: "Diagonalize T(u) — out come two coupled equations for the rapidities.",
     explanation:
       "The algebraic Bethe Ansatz diagonalizes T(u) directly in terms of the bare parameters c and φ, producing two coupled equations for the rapidities Λᵧ: a quantization condition for each electron's momentum k_j, and a condition on how the Λᵧ scatter off each other and off both impurities.",
   },
@@ -115,6 +126,7 @@ export const PROOF_STEPS: ProofCard[] = [
     equationLabel: "eq. (36)–(37)",
     equation:
       "e^{ik_jL} = ∏ (Λᵧ−1+ic/2)/(Λᵧ−1−ic/2)   ·   ∏_{δ≠γ} (Λδ−Λᵧ+ic)/(Λδ−Λᵧ−ic) = (Λᵧ−1−ic/2 ⁄ Λᵧ−1+ic/2)^{Ne}(…)(…)",
+    short: "A change of variable removes the asymmetric phases — a cleaner one-channel form.",
     explanation:
       "Substituting Λᵧ → e^{iφ}(Λᵧ−1)+1 removes the asymmetric phase factors from Step 7 and (after the δ=γ term cancels a stray minus sign) gives this cleaner, symmetric one-channel form — the standard shape of Bethe equations for a Kondo-type impurity problem.",
   },
@@ -125,6 +137,7 @@ export const PROOF_STEPS: ProofCard[] = [
     equationLabel: "eq. (38)–(39)",
     equation:
       "e^{ik_jL} = ∏_{γ=1}^{M} (Λᵧ−1+icn/2)/(Λᵧ−1−icn/2)   ·   ∏_{δ≠γ} (Λδ−Λᵧ+ic)/(Λδ−Λᵧ−ic) = (Λᵧ−1−icn/2 ⁄ Λᵧ−1+icn/2)^{Ne}(…)(…)",
+    short: "Dynamical fusion (c → cn) generalizes to n channels — the equations this app solves numerically.",
     explanation:
       "Invoking the dynamical-fusion construction (Andrei & Destri, 1984) extends the one-channel result to general n by replacing c → cn in the impurity-driving term. These two equations are exactly what this platform solves numerically — via the thermodynamic Bethe Ansatz hierarchy, eq. (9) — to produce every curve in the Simulation section.",
   },
