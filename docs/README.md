@@ -10,7 +10,7 @@ This directory holds the founding planning docs for the platform, produced in or
 | 2 | [Product Requirements Document (PRD)](./02-prd.md) | Draft |
 | 3 | [Competitor Analysis](./03-competitor-analysis.md) | Draft |
 | 4 | [User Personas](./04-user-personas.md) | Draft |
-| 5 | User Journey Maps | Not started |
+| 5 | [User Journey Maps](./05-user-journey-maps.md) | Draft |
 | 6 | Technical Architecture | Not started |
 | 7 | Database Schema | Not started |
 | 8 | API Design | Not started |
