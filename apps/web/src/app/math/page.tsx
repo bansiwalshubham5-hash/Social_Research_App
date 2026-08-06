@@ -3,6 +3,8 @@ import { EquationCard } from "@/components/EquationCard";
 import { LiveMathReadout } from "@/components/simulation/LiveMathReadout";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
+import { VariableExplorer } from "@/components/math/VariableExplorer";
+import { DerivationPlayer } from "@/components/math/DerivationPlayer";
 
 export default function MathPage() {
   return (
@@ -21,24 +23,29 @@ export default function MathPage() {
       </Reveal>
 
       <Reveal delay={260}>
-        <EquationCard label="The Hamiltonian — eq. (1)" equation="H = -iv_F Σ ∫dx ψ†∂ψ + λS₁·J(x₁) + λ*S₂·J(x₂)">
-          <p>
-            <strong className="text-ink">Physical meaning:</strong> free-moving conduction electrons
-            (first term) plus two impurity spins, each coupled to the local electron spin density
-            J(x) at its own position.
+        <div className="flex flex-col gap-3 rounded-xl border border-line bg-paper-raised p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-violet-strong">
+            The Hamiltonian — eq. (1) &middot; click any symbol
           </p>
-          <p>
-            <strong className="text-ink">Why it exists:</strong> this is the standard multichannel
-            Kondo Hamiltonian, with one deliberate twist — impurity 2&apos;s coupling is the complex
-            conjugate of impurity 1&apos;s. That single choice is what makes everything downstream
-            (PT symmetry, non-monotonic entropy) possible.
-          </p>
-          <p>
-            <strong className="text-ink">Connection to the simulation:</strong> λ and its phase φ are
-            what get repackaged into the single dial you actually drag — α — via the definition
-            below.
-          </p>
-        </EquationCard>
+          <VariableExplorer />
+          <div className="flex flex-col gap-2 text-sm leading-relaxed text-ink-soft">
+            <p>
+              <strong className="text-ink">Why it exists:</strong> this is the standard multichannel
+              Kondo Hamiltonian, with one deliberate twist — impurity 2&apos;s coupling is the complex
+              conjugate of impurity 1&apos;s. That single choice is what makes everything downstream
+              (PT symmetry, non-monotonic entropy) possible.
+            </p>
+            <p>
+              <strong className="text-ink">Connection to the simulation:</strong> λ and its phase φ are
+              what get repackaged into the single dial you actually drag — α — via the definition
+              below.
+            </p>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal delay={160}>
+        <DerivationPlayer />
       </Reveal>
 
       <Reveal delay={140}>

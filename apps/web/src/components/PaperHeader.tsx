@@ -12,6 +12,7 @@ const SECTIONS = [
   { href: "/results", label: "Results" },
   { href: "/applications", label: "Applications" },
   { href: "/paper", label: "Original Paper" },
+  { href: "/pages", label: "Pages Mode" },
 ];
 
 export function PaperHeader() {
@@ -27,7 +28,7 @@ export function PaperHeader() {
 
       <nav className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto">
         {SECTIONS.map((s) => {
-          const active = pathname === s.href;
+          const active = pathname === s.href || pathname.startsWith(`${s.href}/`);
           return (
             <Link
               key={s.href}

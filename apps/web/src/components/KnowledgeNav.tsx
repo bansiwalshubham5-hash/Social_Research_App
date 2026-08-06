@@ -7,6 +7,7 @@ import {
   Lightbulb,
   FileText,
   ArrowRight,
+  BookOpenText,
 } from "lucide-react";
 
 const CARDS = [
@@ -77,6 +78,27 @@ export function KnowledgeNav() {
           </Link>
         ))}
       </div>
+
+      <Link
+        href="/pages/1"
+        className="group mt-4 flex items-center gap-4 rounded-2xl border border-line bg-paper-raised p-5 transition hover:border-violet hover:shadow-[0_1px_2px_rgba(21,20,28,0.04),0_12px_32px_-12px_rgba(21,20,28,0.16)]"
+      >
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-soft text-violet-strong">
+          <BookOpenText size={18} strokeWidth={1.75} />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-ink">Or go page by page — Pages Mode</h3>
+          <p className="mt-0.5 text-sm leading-relaxed text-ink-soft">
+            Every page of the actual PDF, broken into paragraphs with inline definitions, an
+            interactive Hamiltonian, and its own AI tutor — for readers who want to understand the
+            paper itself, not just its headline result.
+          </p>
+        </div>
+        <ArrowRight
+          size={16}
+          className="shrink-0 text-ink-soft opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100"
+        />
+      </Link>
     </section>
   );
 }
