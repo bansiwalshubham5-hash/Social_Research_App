@@ -8,7 +8,7 @@ This directory holds the founding planning docs for the platform, produced in or
 |---|---|---|
 | 1 | [Product Vision Refinement](./01-product-vision.md) | Draft |
 | 2 | [Product Requirements Document (PRD)](./02-prd.md) | Draft |
-| 3 | Competitor Analysis | Not started |
+| 3 | [Competitor Analysis](./03-competitor-analysis.md) | Draft |
 | 4 | User Personas | Not started |
 | 5 | User Journey Maps | Not started |
 | 6 | Technical Architecture | Not started |
