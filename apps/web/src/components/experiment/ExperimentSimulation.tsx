@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
 import { usePaperState } from "@/lib/paper-state";
+import { classifyPhase } from "@/lib/tba";
 import { EXPERIMENT_STEPS } from "@/lib/experiment-steps";
 
 // ms spent building each step's piece of the diagram, in order
@@ -33,11 +34,21 @@ function stageForElapsed(e: number) {
 // PT-symmetric coupling, then chirality — with every variable and the
 // governing equation for that step labeled live, looping start to end.
 export function ExperimentSimulation() {
-  const { n } = usePaperState();
+  const { n, alpha, setN, setAlpha } = usePaperState();
   const nRef = useRef(n);
+  const alphaRef = useRef(alpha);
   useEffect(() => {
     nRef.current = n;
-  }, [n]);
+    alphaRef.current = alpha;
+  }, [n, alpha]);
+
+  // positions of the two impurities on the ring, as a fraction of the way
+  // around it (0..1) — freely adjustable; the chiral formulation (step 4)
+  // means the physics never depends on these, only where they're drawn
+  const [x1Frac, setX1Frac] = useState(0.41);
+  const [x2Frac, setX2Frac] = useState(0.91);
+  const x1FracRef = useRef(x1Frac);
+  const x2FracRef = useRef(x2Frac);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [playing, setPlaying] = useState(true);
@@ -45,6 +56,8 @@ export function ExperimentSimulation() {
   const playingRef = useRef(true);
   const elapsedRef = useRef(0);
   const lastTsRef = useRef<number | null>(null);
+
+  const alphaMax = (n / 2 + 1) * Math.PI + Math.PI;
 
   useEffect(() => {
     playingRef.current = playing;
@@ -157,9 +170,10 @@ export function ExperimentSimulation() {
         ctx!.globalAlpha = 1;
       }
 
-      // two impurities, labeled S₁/S₂ and x₁/x₂
-      const imp1a = Math.PI * 0.82;
-      const imp2a = -0.18 * Math.PI;
+      // two impurities, labeled S₁/S₂ and x₁/x₂ — positions come from the
+      // controls below, live (freely adjustable, no effect on the physics)
+      const imp1a = x1FracRef.current * Math.PI * 2;
+      const imp2a = x2FracRef.current * Math.PI * 2;
       const imp1 = { x: cx + Math.cos(imp1a) * R, y: cy + Math.sin(imp1a) * R * tilt };
       const imp2 = { x: cx + Math.cos(imp2a) * R, y: cy + Math.sin(imp2a) * R * tilt };
       if (impuritiesOp > 0.01) {
@@ -207,10 +221,13 @@ export function ExperimentSimulation() {
         ctx!.fillStyle = inkSoft;
         ctx!.font = "10px ui-monospace, monospace";
         ctx!.textAlign = "center";
-        ctx!.fillText("λ , λ*", cx, cy - 6);
+        ctx!.fillText(`λ , λ*  (α = ${alphaRef.current.toFixed(2)})`, cx, cy - 6);
         ctx!.globalAlpha = couplingOp * 0.7;
         ctx!.font = "9px ui-monospace, monospace";
-        ctx!.fillText("PT-symmetric", cx, cy + 9);
+        const phase = classifyPhase(alphaRef.current, nRef.current);
+        const broken = phase === "ysr-1" || phase === "ysr-2";
+        ctx!.fillStyle = broken ? ember : inkSoft;
+        ctx!.fillText(broken ? "PT-broken" : "PT-symmetric", cx, cy + 9);
         ctx!.globalAlpha = 1;
       }
 
@@ -306,6 +323,105 @@ export function ExperimentSimulation() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="rounded-xl border border-line bg-paper-raised p-4">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-violet-strong">
+          Variables you can change
+        </p>
+        <div className="flex flex-col gap-4">
+          <div>
+            <div className="mb-1.5 flex items-center justify-between text-xs text-ink-soft">
+              <span>
+                Channels <span className="font-mono text-ink">n = {n}</span>
+              </span>
+            </div>
+            <div className="flex gap-1.5">
+              {[1, 2, 3, 4, 5, 6].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setN(c)}
+                  className={`h-7 w-7 rounded-full text-xs font-medium transition ${
+                    c === n ? "bg-violet text-white" : "bg-line-soft text-ink-soft hover:bg-line"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-1.5 flex items-center justify-between text-xs text-ink-soft">
+              <span>
+                Coupling strength <span className="font-mono text-ink">α = {alpha.toFixed(3)}</span>
+              </span>
+              <button
+                onClick={() => setAlpha(Math.PI / 6)}
+                className="flex items-center gap-1 text-ink-soft hover:text-ink"
+                aria-label="Reset alpha"
+              >
+                <RotateCcw size={11} /> reset
+              </button>
+            </div>
+            <input
+              type="range"
+              min={0.001}
+              max={alphaMax}
+              step={0.001}
+              value={Math.min(alpha, alphaMax)}
+              onChange={(e) => setAlpha(Number(e.target.value))}
+              className="accent-violet"
+            />
+          </div>
+
+          <div>
+            <div className="mb-1.5 flex items-center justify-between text-xs text-ink-soft">
+              <span>
+                Position of S₁ on the ring <span className="font-mono text-ink">x₁ = {(x1Frac * 100).toFixed(0)}% L</span>
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.005}
+              value={x1Frac}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setX1Frac(v);
+                x1FracRef.current = v;
+              }}
+              className="accent-violet"
+            />
+          </div>
+
+          <div>
+            <div className="mb-1.5 flex items-center justify-between text-xs text-ink-soft">
+              <span>
+                Position of S₂ on the ring <span className="font-mono text-ink">x₂ = {(x2Frac * 100).toFixed(0)}% L</span>
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.005}
+              value={x2Frac}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setX2Frac(v);
+                x2FracRef.current = v;
+              }}
+              className="accent-ember"
+            />
+          </div>
+        </div>
+        <p className="mt-3 text-xs leading-relaxed text-ink-soft">
+          n and α also drive the Simulation section&apos;s entropy curve — change them here and they
+          stay in sync. Try dragging x₁ or x₂ around the ring: step 4 (chiral, forward scattering
+          only) is exactly why moving them never changes any physics, only where they&apos;re drawn.
+        </p>
       </div>
 
       <div className="rounded-xl border border-line bg-paper-raised p-4">
