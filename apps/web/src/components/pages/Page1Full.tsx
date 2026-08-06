@@ -10,6 +10,13 @@ import { ComplexPlaneToggle } from "./abstract/ComplexPlaneToggle";
 import { TowerStepper } from "./abstract/TowerStepper";
 import { CyclicFlowDiagram } from "./abstract/CyclicFlowDiagram";
 import { EntropyEndpointsSparkline } from "./abstract/EntropyEndpointsSparkline";
+import { DefectFlowDiagram } from "./intro/DefectFlowDiagram";
+import { ChiralDefectPlane } from "./intro/ChiralDefectPlane";
+import { FrameworkTagCloud } from "./intro/FrameworkTagCloud";
+import { CriticalVsFlowingCompare } from "./intro/CriticalVsFlowingCompare";
+import { OperatorRelevanceSpectrum } from "./intro/OperatorRelevanceSpectrum";
+import { RingGeometryDiagram } from "./intro/RingGeometryDiagram";
+import { SolutionPipelineDiagram } from "./intro/SolutionPipelineDiagram";
 import { PaperFigure } from "./PaperFigure";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
@@ -18,6 +25,7 @@ const VIOLET = "var(--violet)";
 const EMBER = "var(--ember)";
 const TEAL = "#0ea5a5";
 const TOTAL = 13;
+const ITOTAL = 9;
 
 export function Page1Full() {
   return (
@@ -327,6 +335,197 @@ export function Page1Full() {
         </div>
       </Reveal>
 
+      {/* section divider: introduction begins */}
+      <Reveal delay={320}>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-6">
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            From the introduction — why this problem, and how it&apos;s solved
+          </p>
+          <DepthBadge depth="full" />
+        </div>
+      </Reveal>
+
+      {/* intro 1 */}
+      <Reveal delay={340}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={1} total={ITOTAL} phrase="The ordinary story: a defect flowing between two fixed points" color={VIOLET} />
+          <Paragraph
+            original="Quantum impurity systems provide canonical realizations of integrable defect renormalization-group (RG) flows. In the multichannel Kondo effect, a localized spin is screened by conduction electrons through a defect RG flow connecting ultraviolet and infrared conformal defect fixed points, giving rise to universal non-Fermi-liquid behavior."
+            explanation={
+              <>
+                Before any non-Hermitian twist, this is just the ordinary{" "}
+                <GlossaryTerm id="kondo">multichannel Kondo effect</GlossaryTerm>: a{" "}
+                <GlossaryTerm id="defect">defect</GlossaryTerm> connecting a free-spin ultraviolet fixed point
+                to a screened infrared one, both described by{" "}
+                <GlossaryTerm id="cft">conformal field theory</GlossaryTerm>.
+              </>
+            }
+          />
+          <DefectFlowDiagram />
+        </div>
+      </Reveal>
+
+      {/* intro 2 */}
+      <Reveal delay={360}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={2} total={ITOTAL} phrase="A line defect in an SU(2)ₙ WZW conformal field theory" color={EMBER} />
+          <Paragraph
+            original="In the chiral formulation, the impurity is described by an integrable Kondo line defect in an SU(2)n Wess–Zumino–Witten (WZW) conformal field theory (CFT), whose RG flow interpolates between conformal defect fixed points."
+            explanation={
+              <>
+                The n conduction-electron channels form a specific, exactly-solvable CFT — the{" "}
+                <GlossaryTerm id="wzw">Wess–Zumino–Witten model</GlossaryTerm>. Working{" "}
+                <GlossaryTerm id="chiral">chirally</GlossaryTerm> (one-directional propagation only) is what
+                keeps the whole construction integrable.
+              </>
+            }
+          />
+          <ChiralDefectPlane />
+        </div>
+      </Reveal>
+
+      {/* intro 3 */}
+      <Reveal delay={380}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={3} total={ITOTAL} phrase="A fast-growing field: non-Hermitian criticality" color={TEAL} />
+          <Paragraph
+            original="Recent work has established a broad framework for non-Hermitian conformal and defect criticality, including complex conformal field theories, non-unitary conformal interfaces, lattice realizations of topological defects, boundary criticality, and holographic PT-symmetric defect theories."
+            explanation="Context, not this paper's own result: a whole research program has been building non-Hermitian versions of CFT, defects, and holography. This paper sits inside that program, but asks a question the others hadn't: what happens when the defect actually flows?"
+          />
+          <FrameworkTagCloud />
+        </div>
+      </Reveal>
+
+      {/* intro 4 */}
+      <Reveal delay={400}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={4} total={ITOTAL} phrase="This paper's move: a defect that actually flows" color={VIOLET} />
+          <Paragraph
+            original="In this Letter, we investigate a PT-symmetric multichannel Kondo line defect in a chiral conformal field theory, generalizing the non-Hermitian Kondo model of Refs. [12–16] to multiple channels. Unlike previous non-Hermitian conformal defects, which remain critical, our defect is perturbed by a classically marginal operator that becomes marginally relevant, generating an integrable defect RG flow."
+            explanation={
+              <>
+                The single sentence that separates this paper from the rest of the field in concept 3: most
+                non-Hermitian defects built so far stay exactly at their fixed point — scale-invariant
+                forever, nothing to flow. This one doesn&apos;t.
+              </>
+            }
+          />
+          <CriticalVsFlowingCompare />
+        </div>
+      </Reveal>
+
+      {/* intro 5 */}
+      <Reveal delay={420}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={5} total={ITOTAL} phrase="A classically marginal operator that turns marginally relevant" color={EMBER} />
+          <Paragraph
+            original="...our defect is perturbed by a classically marginal operator that becomes marginally relevant, generating an integrable defect RG flow."
+            explanation={
+              <>
+                The actual mechanism behind concept 4&apos;s claim. A{" "}
+                <GlossaryTerm id="marginal">marginally relevant operator</GlossaryTerm> is the same trick that
+                drives ordinary Kondo screening — classically borderline, but tipped into growing once quantum
+                corrections are included.
+              </>
+            }
+          />
+          <OperatorRelevanceSpectrum />
+        </div>
+      </Reveal>
+
+      {/* intro 6 — Hamiltonian */}
+      <Reveal delay={440}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={6} total={ITOTAL} phrase="The microscopic Hamiltonian, eq. (1)" color={TEAL} />
+          <Paragraph
+            original="A microscopic realization is provided by a pair of spin-1/2 impurities coupled through complex-conjugate Kondo interactions to n channels of conduction electrons, H = −ivF Σₐ₌₁ⁿ Σσ ∫dx ψ†aσ(x)∂xψaσ(x) + λS1·J(x1) + λ*S2·J(x2), where J(x) = ½ Σₐ ψ†aα(x)σαβψaβ(x) is the SU(2)n current, and the impurities S1,2 are located at x1,2 on a ring of circumference L."
+            explanation="One equation, two sums and an integral. It looks dense mostly because it's careful: sum over all n channels, sum over both spin projections, integrate along the whole ring — that's just the free electrons. The physics everyone cares about is the two short terms tacked on the end."
+          />
+          <ColorCodedEquation
+            tokens={[
+              { text: "H = −iv_F " },
+              { text: "Σₐ₌₁ⁿ Σσ ∫dx ψ†ₐσ(x)∂ₓψₐσ(x)", color: TEAL },
+              { text: "  +  " },
+              { text: "λS₁·J(x₁)", color: VIOLET },
+              { text: "  +  " },
+              { text: "λ*S₂·J(x₂)", color: EMBER },
+            ]}
+            legend={[
+              { label: "Σₐ₌₁ⁿ Σσ ∫dx ψ†ₐσ∂ₓψₐσ", color: TEAL, desc: "the free kinetic term — n channels, 2 spin projections, integrated around the ring" },
+              { label: "λS₁·J(x₁)", color: VIOLET, desc: "impurity 1's coupling to the electron spin current at x₁" },
+              { label: "λ*S₂·J(x₂)", color: EMBER, desc: "impurity 2's coupling — λ*, the complex conjugate of λ — at x₂" },
+            ]}
+          />
+          <ColorCodedEquation
+            tokens={[{ text: "J(x) = ½ Σₐ ψ†ₐα(x) σαβ ψₐβ(x)" }]}
+            legend={[{ label: "J(x)", color: "var(--ink-soft)", desc: "the SU(2)ₙ current — the total electron spin density at position x, summed over all n channels" }]}
+          />
+        </div>
+      </Reveal>
+
+      {/* intro 7 — ring geometry */}
+      <Reveal delay={460}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={7} total={ITOTAL} phrase="Two impurities on a ring — forward scattering only" color={VIOLET} />
+          <Paragraph
+            original="...the impurities S1,2 are located at x1,2 on a ring of circumference L. ...it retains only forward scattering, with impurity backscattering and direct impurity–impurity interactions absent. As a result, the energies are independent of the impurity positions."
+            explanation="A concrete, checkable claim. Because electrons only move one way around the ring (no backscattering, no impurity-impurity interaction), the actual positions x₁ and x₂ never enter the energy spectrum at all — try to break that below."
+          />
+          <RingGeometryDiagram />
+        </div>
+      </Reveal>
+
+      {/* intro 8 — solution pipeline */}
+      <Reveal delay={480}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={8} total={ITOTAL} phrase="From Hamiltonian to free energy: the solution pipeline" color={EMBER} />
+          <Paragraph
+            original="The exact solution follows from a generalized thermodynamic Bethe Ansatz, yielding the defect free energy and Affleck–Ludwig g-function."
+            explanation={
+              <>
+                One sentence, five steps. The{" "}
+                <GlossaryTerm id="betheansatz">Bethe Ansatz</GlossaryTerm> solves the Hamiltonian exactly; the{" "}
+                <GlossaryTerm id="tba">thermodynamic Bethe Ansatz</GlossaryTerm> extends that to finite
+                temperature; the output is the free energy and the{" "}
+                <GlossaryTerm id="gfunction">g-function</GlossaryTerm> — every curve elsewhere on this site.
+              </>
+            }
+          />
+          <SolutionPipelineDiagram />
+        </div>
+      </Reveal>
+
+      {/* intro 9 — effective couplings, cut off */}
+      <Reveal delay={500}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={9} total={ITOTAL} phrase="The effective coupling: magnitude c and phase φ" color={TEAL} />
+          <Paragraph
+            original="Introducing the effective couplings c̃ = ce^(iφ) = 2λ/(1 − ¾λ²) and c̃* = ce^(−iφ) = 2λ*/(1 − ¾(λ*)²), we define the..."
+            explanation="One last change of variables before the paper turns to the Bethe equations themselves: instead of the bare coupling λ, everything downstream is written in terms of an effective coupling with a clean magnitude c and phase φ — φ is exactly what becomes the α you've been dragging throughout this site."
+          />
+          <ColorCodedEquation
+            tokens={[
+              { text: "c̃ = ce" },
+              { text: "iφ", color: VIOLET },
+              { text: " = 2λ/(1 − ¾λ²)          c̃* = ce" },
+              { text: "−iφ", color: EMBER },
+              { text: " = 2λ*/(1 − ¾(λ*)²)" },
+            ]}
+            legend={[
+              { label: "c", color: "var(--ink-soft)", desc: "the effective coupling's magnitude" },
+              { label: "φ", color: VIOLET, desc: "the effective coupling's phase — becomes the α used everywhere on this site" },
+            ]}
+          />
+          <div className="rounded-xl border-2 border-dashed p-4" style={{ borderColor: "var(--line)" }}>
+            <p className="text-xs leading-relaxed text-ink-soft">
+              This is exactly where the paper&apos;s own text breaks across a page — &ldquo;we define the...&rdquo;
+              continues on the next page. Send the next chunk whenever you&apos;re ready and it&apos;ll pick up
+              right here.
+            </p>
+          </div>
+        </div>
+      </Reveal>
+
       <Reveal delay={140}>
         <PrereqAndObservations
           prerequisites={[
@@ -355,14 +554,19 @@ export function Page1Full() {
             "gfunction",
             "gtheorem",
             "tba",
+            "cft",
+            "wzw",
+            "chiral",
+            "defect",
+            "marginal",
           ]}
         />
       </Reveal>
 
       <Reveal delay={140}>
         <AiTutorPanel
-          sectionName="Page 1 — Abstract"
-          prompt="The reader has just gone through the paper's abstract broken into 13 concepts: the PT-symmetric non-Hermitian model, channel count, complex-conjugate couplings, RG invariants, the four phases, PT breaking, the free energy/g-function, entropy endpoints, tower reorganization, YSR/cyclic flow, the g-theorem conjecture, and the breakdown-of-monotonicity payoff. Explain how these fit together as one continuous argument, at the requested depth level."
+          sectionName="Page 1 — Abstract & Introduction"
+          prompt="The reader has just gone through the paper's abstract (13 concepts: the PT-symmetric non-Hermitian model, channel count, complex-conjugate couplings, RG invariants, the four phases, PT breaking, the free energy/g-function, entropy endpoints, tower reorganization, YSR/cyclic flow, the g-theorem conjecture, and the breakdown-of-monotonicity payoff) followed by the introduction (9 concepts: the ordinary defect-flow picture, the chiral WZW formulation, the non-Hermitian-criticality research landscape, why this defect actually flows unlike earlier ones, the marginally-relevant operator mechanism, the microscopic Hamiltonian eq. 1, the ring geometry and forward-scattering-only structure, the Bethe-Ansatz-to-g-function solution pipeline, and the effective coupling c̃/φ). Explain how these fit together as one continuous argument, at the requested depth level."
         />
       </Reveal>
     </div>
