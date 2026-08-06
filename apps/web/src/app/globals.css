@@ -60,3 +60,49 @@ body {
 ::selection {
   background: var(--violet-soft);
 }
+
+/* one-shot "highlight itself" pop, used on badges/markers as Reveal brings
+   a step into view — paired via matching animation-delay, not re-triggered */
+@keyframes badge-pop {
+  0% {
+    transform: scale(0.55);
+    box-shadow: 0 0 0 0 var(--violet-soft);
+  }
+  55% {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 6px var(--violet-soft);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+.badge-pop {
+  animation: badge-pop 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Reveal.tsx: fade + slide up once the IntersectionObserver marks it
+   visible. prefers-reduced-motion is handled here, not in JS, so reduced-
+   motion users see content immediately regardless of scroll position. */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.65s ease,
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge-pop {
+    animation: none;
+  }
+  .reveal,
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

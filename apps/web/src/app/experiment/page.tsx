@@ -1,6 +1,7 @@
 import { SectionShell, Prose } from "@/components/SectionShell";
 import { CinematicScene } from "@/components/CinematicScene";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
+import { Reveal } from "@/components/Reveal";
 
 const STEPS = [
   {
@@ -24,49 +25,62 @@ const STEPS = [
 export default function ExperimentPage() {
   return (
     <SectionShell eyebrow="Section ① — Experiment" title="The setup, exactly as the paper defines it">
-      <div className="dark mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-paper">
-        <CinematicScene />
-      </div>
+      <Reveal>
+        <div className="dark mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-paper">
+          <CinematicScene />
+        </div>
+      </Reveal>
 
-      <Prose>
-        <p>
-          This is a theory paper — there is no physical lab bench, no measured
-          data, no apparatus you could photograph. Being honest about that
-          matters more than pretending otherwise: what follows is the{" "}
-          <em>theoretical experiment</em> — the exact setup the authors define
-          and then solve exactly, step by step.
-        </p>
-      </Prose>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            This is a theory paper — there is no physical lab bench, no measured
+            data, no apparatus you could photograph. Being honest about that
+            matters more than pretending otherwise: what follows is the{" "}
+            <em>theoretical experiment</em> — the exact setup the authors define
+            and then solve exactly, step by step.
+          </p>
+        </Prose>
+      </Reveal>
 
       <div className="flex flex-col gap-5">
         {STEPS.map((s, i) => (
-          <div key={s.title} className="flex gap-4 rounded-xl border border-line bg-paper-raised p-4">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-soft text-xs font-semibold text-violet-strong">
-              {i + 1}
+          <Reveal key={s.title} delay={200 + i * 140}>
+            <div className="flex gap-4 rounded-xl border border-line bg-paper-raised p-4">
+              <div
+                className="badge-pop flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-soft text-xs font-semibold text-violet-strong"
+                style={{ animationDelay: `${200 + i * 140 + 150}ms` }}
+              >
+                {i + 1}
+              </div>
+              <div>
+                <h3 className="font-medium text-ink">{s.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">{s.body}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-medium text-ink">{s.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-ink-soft">{s.body}</p>
-            </div>
-          </div>
+          </Reveal>
         ))}
       </div>
 
-      <div className="rounded-xl border border-dashed border-line bg-line-soft/50 p-4 text-sm leading-relaxed text-ink-soft">
-        <strong className="text-ink">A source of confusion worth heading off:</strong> &ldquo;non-Hermitian&rdquo;
-        does not mean &ldquo;unphysical.&rdquo; It&apos;s the standard language for any system that exchanges energy
-        or particles with something outside the model — here, effectively, a Hamiltonian description of gain
-        and loss balanced just so (PT symmetry) rather than a closed, isolated system. See{" "}
-        <a href="/applications" className="text-violet-strong hover:underline">
-          Applications
-        </a>{" "}
-        for where such couplings actually arise physically.
-      </div>
+      <Reveal delay={200 + STEPS.length * 140}>
+        <div className="rounded-xl border border-dashed border-line bg-line-soft/50 p-4 text-sm leading-relaxed text-ink-soft">
+          <strong className="text-ink">A source of confusion worth heading off:</strong> &ldquo;non-Hermitian&rdquo;
+          does not mean &ldquo;unphysical.&rdquo; It&apos;s the standard language for any system that exchanges energy
+          or particles with something outside the model — here, effectively, a Hamiltonian description of gain
+          and loss balanced just so (PT symmetry) rather than a closed, isolated system. See{" "}
+          <a href="/applications" className="text-violet-strong hover:underline">
+            Applications
+          </a>{" "}
+          for where such couplings actually arise physically.
+        </div>
+      </Reveal>
 
-      <AiTutorPanel
-        sectionName="Experiment"
-        prompt="Explain the theoretical setup of this paper's model (two impurities on a ring, n conduction channels, complex-conjugate Kondo couplings, PT symmetry, chiral/forward-scattering-only formulation) — walk through why each modeling choice is made, at the requested depth level."
-      />
+      <Reveal delay={200 + (STEPS.length + 1) * 140}>
+        <AiTutorPanel
+          sectionName="Experiment"
+          prompt="Explain the theoretical setup of this paper's model (two impurities on a ring, n conduction channels, complex-conjugate Kondo couplings, PT symmetry, chiral/forward-scattering-only formulation) — walk through why each modeling choice is made, at the requested depth level."
+        />
+      </Reveal>
     </SectionShell>
   );
 }

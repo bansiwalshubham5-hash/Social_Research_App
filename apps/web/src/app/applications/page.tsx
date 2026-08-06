@@ -1,5 +1,6 @@
 import { SectionShell, Prose } from "@/components/SectionShell";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
+import { Reveal } from "@/components/Reveal";
 import { Microscope, Atom, Radio, Sparkles } from "lucide-react";
 
 const APPS = [
@@ -28,30 +29,39 @@ const APPS = [
 export default function ApplicationsPage() {
   return (
     <SectionShell eyebrow="Section ⑤ — Applications" title="Why this isn't just a mathematical curiosity">
-      <Prose>
-        <p>
-          This is fundamental theory, not an engineering paper — so &ldquo;application&rdquo; means
-          something more specific here: where does the physics this paper describes actually show
-          up, and what does the result constrain?
-        </p>
-      </Prose>
+      <Reveal>
+        <Prose>
+          <p>
+            This is fundamental theory, not an engineering paper — so &ldquo;application&rdquo; means
+            something more specific here: where does the physics this paper describes actually show
+            up, and what does the result constrain?
+          </p>
+        </Prose>
+      </Reveal>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {APPS.map((a) => (
-          <div key={a.title} className="flex flex-col gap-2 rounded-xl border border-line bg-paper-raised p-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-soft text-violet-strong">
-              <a.icon size={15} strokeWidth={1.75} />
+        {APPS.map((a, i) => (
+          <Reveal key={a.title} delay={120 + i * 130}>
+            <div className="flex flex-col gap-2 rounded-xl border border-line bg-paper-raised p-4">
+              <div
+                className="badge-pop flex h-8 w-8 items-center justify-center rounded-full bg-violet-soft text-violet-strong"
+                style={{ animationDelay: `${120 + i * 130 + 150}ms` }}
+              >
+                <a.icon size={15} strokeWidth={1.75} />
+              </div>
+              <h3 className="font-medium text-ink">{a.title}</h3>
+              <p className="text-sm leading-relaxed text-ink-soft">{a.body}</p>
             </div>
-            <h3 className="font-medium text-ink">{a.title}</h3>
-            <p className="text-sm leading-relaxed text-ink-soft">{a.body}</p>
-          </div>
+          </Reveal>
         ))}
       </div>
 
-      <AiTutorPanel
-        sectionName="Applications"
-        prompt="Explain why non-Hermitian PT-symmetric Kondo physics matters beyond pure mathematics — connect to open/dissipative quantum systems, photonic and cold-atom PT-symmetric platforms, measured fractional Kondo entropy, and the broader family of RG monotonicity theorems (g-theorem, c-theorem) — at the requested depth level."
-      />
+      <Reveal delay={140}>
+        <AiTutorPanel
+          sectionName="Applications"
+          prompt="Explain why non-Hermitian PT-symmetric Kondo physics matters beyond pure mathematics — connect to open/dissipative quantum systems, photonic and cold-atom PT-symmetric platforms, measured fractional Kondo entropy, and the broader family of RG monotonicity theorems (g-theorem, c-theorem) — at the requested depth level."
+        />
+      </Reveal>
     </SectionShell>
   );
 }
