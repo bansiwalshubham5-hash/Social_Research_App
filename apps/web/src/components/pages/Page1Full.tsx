@@ -1,11 +1,23 @@
 import { DepthBadge, Paragraph, PrereqAndObservations, TermChips } from "./PageChrome";
 import { GlossaryTerm } from "./GlossaryTerm";
-import { PTSymmetryIllustration } from "./PTSymmetryIllustration";
+import { ConceptHeading } from "./abstract/ConceptHeading";
+import { NonHermitianIllustration } from "./abstract/NonHermitianIllustration";
+import { ChannelCountVisualizer } from "./abstract/ChannelCountVisualizer";
+import { ColorCodedEquation } from "./abstract/ColorCodedEquation";
+import { RGFlowBar } from "./abstract/RGFlowBar";
+import { PhaseNumberLine } from "./abstract/PhaseNumberLine";
+import { ComplexPlaneToggle } from "./abstract/ComplexPlaneToggle";
+import { TowerStepper } from "./abstract/TowerStepper";
+import { CyclicFlowDiagram } from "./abstract/CyclicFlowDiagram";
+import { EntropyEndpointsSparkline } from "./abstract/EntropyEndpointsSparkline";
 import { PaperFigure } from "./PaperFigure";
-import { VariableExplorer } from "@/components/math/VariableExplorer";
-import { EntropyExplorer } from "@/components/simulation/EntropyExplorer";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
+
+const VIOLET = "var(--violet)";
+const EMBER = "var(--ember)";
+const TEAL = "#0ea5a5";
+const TOTAL = 13;
 
 export function Page1Full() {
   return (
@@ -13,202 +25,305 @@ export function Page1Full() {
       <Reveal>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Title, abstract, and introduction
+            The abstract, concept by concept
           </p>
           <DepthBadge depth="full" />
         </div>
       </Reveal>
 
-      <Reveal delay={80}>
-        <Paragraph
-          original="We study a PT-symmetric non-Hermitian multichannel Kondo model consisting of a pair of spin-1/2 impurities coupled to n conduction-electron channels through complex-conjugate Kondo couplings."
-          explanation={
-            <>
-              This is the paper&apos;s one-sentence summary of its own setup: two{" "}
-              <GlossaryTerm id="impurity">tiny magnetic objects</GlossaryTerm> sitting in a sea of
-              conduction electrons, coupled to them in a special way (complex-conjugate strengths)
-              that makes the whole system{" "}
-              <GlossaryTerm id="ptsymmetric">PT-symmetric</GlossaryTerm>.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={120}>
-        <PTSymmetryIllustration />
-      </Reveal>
-
-      <Reveal delay={160}>
-        <Paragraph
-          original="The impurity renormalization-group (RG) flow is characterized by two invariants: the Kondo scale T_K, generalizing the conventional Kondo temperature, and a dimensionless parameter α measuring the departure from Hermiticity."
-          explanation={
-            <>
-              As you cool the system down, its behavior changes — that change is called{" "}
-              <GlossaryTerm id="rg">RG flow</GlossaryTerm>. Two numbers control everything about
-              that flow here: an energy scale T_K (where the interesting physics happens) and a
-              single dimensionless number α (which of four qualitatively different behaviors you
-              get). α is the slider in this platform&apos;s Simulation section.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={200}>
-        <Paragraph
-          original="As α increases, the exact Bethe Ansatz solution reveals four impurity phases: overscreened Kondo (0<α<π/2), zero mode (π/2<α<nπ/2), Yu–Shiba–Rusinov (nπ/2<α<(n/2+1)π), and local moment (α>(n/2+1)π)."
-          explanation={
-            <>
-              The paper&apos;s headline result in one sentence — four distinct regimes as α grows,
-              solved exactly (not approximately) via the{" "}
-              <GlossaryTerm id="betheansatz">Bethe Ansatz</GlossaryTerm>. See the{" "}
-              <a href="/results" className="text-violet-strong hover:underline">
-                Results
-              </a>{" "}
-              section for the full walkthrough of all four.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={240}>
-        <div className="flex flex-col gap-3 rounded-xl border border-line bg-paper-raised p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-violet-strong">
-            Try it — drag α and watch the phase change
+      {/* 0 — hook */}
+      <Reveal delay={40}>
+        <div className="rounded-xl border-2 border-dashed p-5" style={{ borderColor: EMBER }}>
+          <p className="font-serif text-3xl font-bold text-ink">
+            Breakdown<span style={{ color: EMBER }}>.</span>
           </p>
-          <EntropyExplorer variant="embedded" />
-          <p className="text-sm leading-relaxed text-ink-soft">
-            This is the exact object the paragraph above is describing — not a stylized cartoon.
-            Drag α across the boundaries and the phase badge above the plot switches between the four
-            regimes, live.
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            Physicists have a rule of thumb: cool a quantum system down, and a certain kind of entropy —
+            the impurity&apos;s own contribution — should only ever go one way. Down. Never back up. This
+            paper&apos;s title is a claim that the rule can fail. Not approximately, not numerically — exactly,
+            in a model solved in closed form. Everything below builds up to <em>why</em>, one piece of the
+            paper&apos;s own abstract at a time. By the end, &ldquo;breakdown&rdquo; will mean something very
+            specific.
           </p>
         </div>
       </Reveal>
 
+      {/* 1 */}
+      <Reveal delay={80}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={1} total={TOTAL} phrase="A PT-symmetric, non-Hermitian, multichannel Kondo model" color={VIOLET} />
+          <Paragraph
+            original="We study a PT-symmetric non-Hermitian multichannel Kondo model consisting of a pair of spin-1/2 impurities coupled to n conduction-electron channels through complex-conjugate Kondo couplings."
+            explanation={
+              <>
+                Every word here is load-bearing. It&apos;s a{" "}
+                <GlossaryTerm id="kondo">Kondo model</GlossaryTerm> (a magnetic impurity in a sea of
+                electrons) that&apos;s <GlossaryTerm id="multichannel">multichannel</GlossaryTerm> (n
+                flavors of electron, not one) and{" "}
+                <GlossaryTerm id="nonhermitian">non-Hermitian</GlossaryTerm> (an open system, not a closed
+                one) — yet still <GlossaryTerm id="ptsymmetric">PT-symmetric</GlossaryTerm>, which is what
+                keeps it mathematically tractable at all.
+              </>
+            }
+          />
+          <NonHermitianIllustration />
+        </div>
+      </Reveal>
+
+      {/* 2 */}
+      <Reveal delay={100}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={2} total={TOTAL} phrase="Two impurities, n conduction-electron channels" color={EMBER} />
+          <Paragraph
+            original="...a pair of spin-1/2 impurities coupled to n conduction-electron channels..."
+            explanation={
+              <>
+                Two <GlossaryTerm id="impurity">impurities</GlossaryTerm>, S₁ and S₂ — that part never
+                changes. What does change, and what you can drive yourself below, is n: how many
+                independent channels of conduction electrons surround them. More channels means more
+                collective ways to screen each impurity&apos;s spin.
+              </>
+            }
+          />
+          <ChannelCountVisualizer />
+        </div>
+      </Reveal>
+
+      {/* 3 */}
+      <Reveal delay={120}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={3} total={TOTAL} phrase="Complex-conjugate Kondo couplings" color={TEAL} />
+          <Paragraph
+            original="...coupled...through complex-conjugate Kondo couplings."
+            explanation={
+              <>
+                Impurity 1 couples with strength λ; impurity 2 couples with λ* — the complex conjugate.
+                That single asymmetric-looking choice is what makes the whole Hamiltonian PT-symmetric
+                instead of just non-Hermitian and untractable.
+              </>
+            }
+          />
+          <ColorCodedEquation
+            tokens={[
+              { text: "H_int = " },
+              { text: "λ", color: VIOLET },
+              { text: " S₁·J(x₁) + " },
+              { text: "λ*", color: EMBER },
+              { text: " S₂·J(x₂)" },
+            ]}
+            legend={[
+              { label: "λ", color: VIOLET, desc: "impurity 1's coupling — a complex number |λ|e^(iφ)" },
+              { label: "λ*", color: EMBER, desc: "impurity 2's coupling — the complex conjugate of λ" },
+            ]}
+          />
+        </div>
+      </Reveal>
+
+      {/* 4 */}
+      <Reveal delay={140}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={4} total={TOTAL} phrase="Two invariants: the Kondo scale T_K and α" color={VIOLET} />
+          <Paragraph
+            original="The impurity renormalization-group (RG) flow is characterized by two invariants: the Kondo scale T_K, generalizing the conventional Kondo temperature, and a dimensionless parameter α measuring the departure from Hermiticity."
+            explanation={
+              <>
+                As you cool the system, its behavior changes — <GlossaryTerm id="rg">RG flow</GlossaryTerm>.
+                Two numbers survive that flow unchanged and control everything: T_K, an energy scale, and α,
+                a single dimensionless number. α is the one interactive dial running through this entire
+                platform.
+              </>
+            }
+          />
+          <RGFlowBar />
+        </div>
+      </Reveal>
+
+      {/* 5 */}
+      <Reveal delay={160}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={5} total={TOTAL} phrase="Four impurity phases as α increases" color={EMBER} />
+          <Paragraph
+            original="As α increases, the exact Bethe Ansatz solution reveals four impurity phases: overscreened Kondo (0<α<π/2), zero mode (π/2<α<nπ/2), Yu–Shiba–Rusinov (nπ/2<α<(n/2+1)π), and local moment (α>(n/2+1)π)."
+            explanation={
+              <>
+                The paper&apos;s headline structural result, solved exactly via the{" "}
+                <GlossaryTerm id="betheansatz">Bethe Ansatz</GlossaryTerm> — not approximated. Drag the
+                marker below (it&apos;s wired to the same α used everywhere on this site) and watch which
+                regime you land in.
+              </>
+            }
+          />
+          <PhaseNumberLine />
+          <PaperFigure
+            src="/images/fig1-phase-diagram.png"
+            width={1700}
+            height={506}
+            alt="Figure 1 from the paper: phase diagram showing Kondo, zero-mode, YSR, and local-moment phases with excitation towers"
+            label="Fig. 1"
+            explanation={
+              <>
+                Needed here because it&apos;s the paper&apos;s own canonical picture of exactly this result —
+                the same four phases, drawn as excitation-energy diagrams. Each comb is one{" "}
+                <GlossaryTerm id="tower">excitation tower</GlossaryTerm>.
+              </>
+            }
+          />
+        </div>
+      </Reveal>
+
+      {/* 6 */}
+      <Reveal delay={180}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={6} total={TOTAL} phrase="PT-unbroken, or PT-broken" color={TEAL} />
+          <Paragraph
+            original="The Kondo, zero-mode, and local-moment phases are PT-unbroken, whereas the YSR phase spontaneously breaks PT symmetry."
+            explanation={
+              <>
+                Three of the four phases keep every energy real, despite the non-Hermitian Hamiltonian —
+                that&apos;s &ldquo;unbroken.&rdquo; In the{" "}
+                <GlossaryTerm id="ysr">Yu–Shiba–Rusinov</GlossaryTerm> phase, symmetry breaks
+                spontaneously and energies go genuinely complex. Toggle below to see the difference on the
+                one picture that actually shows it.
+              </>
+            }
+          />
+          <ComplexPlaneToggle />
+        </div>
+      </Reveal>
+
+      {/* 7 */}
+      <Reveal delay={200}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={7} total={TOTAL} phrase="The impurity free energy and the g-function" color={VIOLET} />
+          <Paragraph
+            original="Using a generalized thermodynamic Bethe Ansatz, we determine the impurity free energy and Affleck–Ludwig g-function throughout the PT-unbroken phases."
+            explanation={
+              <>
+                The <GlossaryTerm id="tba">thermodynamic Bethe Ansatz</GlossaryTerm> extends the exact
+                solution to finite temperature. Its output, the impurity free energy, is where every curve
+                on this platform ultimately comes from.
+              </>
+            }
+          />
+          <ColorCodedEquation
+            tokens={[
+              { text: "F_imp = -(T/π) ∫dξ " },
+              { text: "[cosα · cosh(ξ+ln(T/T_K))] ", color: EMBER },
+              { text: "· " },
+              { text: "ln[1+η₁(ξ)]", color: VIOLET },
+              { text: " / [cosh²(...) − sin²α]" },
+            ]}
+            legend={[
+              { label: "cosα · cosh(...)", color: EMBER, desc: "the α-dependent kernel — width narrows as α grows" },
+              { label: "ln[1+η₁(ξ)]", color: VIOLET, desc: "the TBA solution — solved numerically, validated against closed-form limits" },
+            ]}
+          />
+        </div>
+      </Reveal>
+
+      {/* 8 */}
+      <Reveal delay={220}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={8} total={TOTAL} phrase="Entropy flowing from 2ln2 to 2ln[2cos(π/(n+2))]" color={EMBER} />
+          <Paragraph
+            original="In the Kondo phase, the defect RG flow connects the ultraviolet and infrared conformal fixed points, with the impurity entropy flowing from 2ln2 to 2ln[2cos(π/(n+2))], in agreement with defect conformal field theory."
+            explanation={
+              <>
+                A concrete number you can watch move. At high temperature, two decoupled spin-1/2
+                impurities carry 2ln2 of pure &ldquo;don&apos;t know which state&rdquo; entropy. Cool down and
+                conduction electrons partially screen it away, landing on a smaller,{" "}
+                <span className="font-mono">n</span>-dependent plateau — the{" "}
+                <GlossaryTerm id="gfunction">g-function</GlossaryTerm>.
+              </>
+            }
+          />
+          <EntropyEndpointsSparkline />
+        </div>
+      </Reveal>
+
+      {/* 9 */}
+      <Reveal delay={240}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={9} total={TOTAL} phrase="Impurity strings reorganize the spectrum into towers" color={TEAL} />
+          <Paragraph
+            original="In the zero-mode phase, zero-energy fundamental and higher-order impurity strings reorganize the spectrum into two and three excitation towers..."
+            explanation={
+              <>
+                This is the actual microscopic mechanism behind the paper&apos;s title. Past α=π/2, new{" "}
+                <GlossaryTerm id="impuritystring">impurity strings</GlossaryTerm> with exactly zero energy
+                appear and split the single excitation tower into two, then three. Step through it below.
+              </>
+            }
+          />
+          <TowerStepper />
+        </div>
+      </Reveal>
+
+      {/* 10 */}
+      <Reveal delay={260}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={10} total={TOTAL} phrase="A complex spectrum, and a cyclic RG flow" color={VIOLET} />
+          <Paragraph
+            original="...in the YSR phase, spontaneous PT symmetry breaking produces a complex spectrum beyond the scope of our thermodynamic Bethe Ansatz; and in the local-moment phase, the RG flow becomes cyclic, returning to the unscreened local-moment fixed point."
+            explanation={
+              <>
+                Two honest limits, back to back. In the YSR phase the paper is explicit that its own TBA
+                doesn&apos;t apply (see concept 6 again). In the local-moment phase, the flow doesn&apos;t
+                connect two different fixed points at all — it loops.
+              </>
+            }
+          />
+          <CyclicFlowDiagram />
+        </div>
+      </Reveal>
+
+      {/* 11 */}
       <Reveal delay={280}>
-        <PaperFigure
-          src="/images/fig1-phase-diagram.png"
-          width={1700}
-          height={506}
-          alt="Figure 1 from the paper: phase diagram of the n-channel Kondo model showing Kondo, zero-mode, YSR, and local-moment phases as alpha increases, with excitation towers drawn for each"
-          label="Fig. 1"
-          explanation={
-            <>
-              This is the paper&apos;s own figure — the same four phases you just drove in the
-              simulation above, drawn as excitation-energy diagrams. Each vertical comb is an{" "}
-              <GlossaryTerm id="tower">excitation tower</GlossaryTerm>: one tower in the Kondo phase,
-              splitting into two and then three as{" "}
-              <GlossaryTerm id="impuritystring">impurity strings</GlossaryTerm> appear. The
-              background color marks whether{" "}
-              <GlossaryTerm id="ptsymmetric">PT symmetry</GlossaryTerm> is unbroken (blue/green) or
-              spontaneously broken (red, the YSR phase).
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={320}>
         <Paragraph
-          original="In the Kondo phase, the defect RG flow connects the ultraviolet and infrared conformal fixed points, with the impurity entropy flowing from 2 ln 2 to 2 ln[2cos(π/(n+2))], in agreement with defect conformal field theory."
+          original="We conjecture that RG irreversibility, and hence a generalized Affleck–Ludwig g-theorem, survives throughout the Kondo phase 0 < α < π/2, where excitations remain organized into a single tower."
           explanation={
             <>
-              A concrete number you can watch move: at high temperature the two decoupled
-              spin-1/2 impurities contribute entropy ln 2 each (2 ln 2 total — pure &ldquo;I don&apos;t
-              know which state it&apos;s in&rdquo; uncertainty). Cool the system down and conduction
-              electrons partially screen that uncertainty away, so the entropy settles at a smaller,
-              n-dependent value. This is exactly the{" "}
-              <GlossaryTerm id="gfunction">g-function</GlossaryTerm> — the standard measure of
-              &ldquo;how much boundary entropy is left&rdquo; in defect CFT.
+              A conjecture, stated as one — the authors are careful not to claim a proof. The ordinary{" "}
+              <GlossaryTerm id="gtheorem">g-theorem</GlossaryTerm> (entropy only ever decreases on cooling)
+              plausibly survives exactly as long as there&apos;s only a single excitation tower doing the
+              work — i.e., before concept 9&apos;s reorganization kicks in.
             </>
           }
         />
       </Reveal>
 
-      <Reveal delay={360}>
-        <PaperFigure
-          src="/images/fig2-entropy-curves.png"
-          width={1700}
-          height={502}
-          alt="Figure 2 from the paper: impurity entropy S_imp as a function of T/T_K for different alpha values and different channel numbers, showing monotonic decrease from 2ln2 to a lower plateau"
-          label="Fig. 2"
-          explanation={
-            <>
-              Left panel: the entropy curve from the simulation above, plotted the way the paper
-              plots it — smoothly decreasing from ln 4 (= 2 ln 2) down to a plateau, for a few values
-              of α. Right panel: the same curve at fixed α = π/4 for channel numbers n = 1 through 6 —
-              more channels means a higher infrared plateau, exactly the{" "}
-              <span className="font-mono text-ink">2 ln[2cos(π/(n+2))]</span> formula above. Try
-              changing n in the simulation and watch this plateau move.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={400}>
-        <Paragraph
-          original="Our exact solution shows, however, that neither a real spectrum nor ultraviolet and infrared defect entropies consistent with defect CFT are sufficient to guarantee RG irreversibility: in the zero-mode phase, the impurity entropy develops intermediate overshoots and undershoots between distinct ultraviolet and infrared fixed-point values."
-          explanation={
-            <>
-              This is the paper&apos;s title, in one sentence. The{" "}
-              <GlossaryTerm id="gtheorem">g-theorem</GlossaryTerm> is physicists&apos; usual guarantee
-              that this kind of entropy only ever decreases as you cool a system — never bounces back
-              up. Past α = π/2, extra zero-energy impurity strings reorganize the spectrum into
-              multiple towers, and the entropy genuinely stops being{" "}
-              <GlossaryTerm id="nonmonotonic">monotonic</GlossaryTerm> — it dips or bumps on the way
-              down. Push α past π/2 in the simulation above and watch the curve stop being a smooth
-              slide.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={440}>
-        <Paragraph
-          original="Quantum impurity systems provide canonical realizations of integrable defect renormalization-group (RG) flows. In the multichannel Kondo effect, a localized spin is screened by conduction electrons through a defect RG flow connecting ultraviolet and infrared conformal defect fixed points."
-          explanation={
-            <>
-              Sets the stage: the ordinary{" "}
-              <GlossaryTerm id="kondo">Kondo effect</GlossaryTerm> is already a well-understood
-              example of a{" "}
-              <GlossaryTerm id="defect">defect</GlossaryTerm> flowing between two{" "}
-              <GlossaryTerm id="cft">conformal field theory</GlossaryTerm> fixed points — a
-              &ldquo;hot&rdquo; unscreened one and a &ldquo;cold&rdquo; screened one. This paper
-              asks what happens to that familiar picture once you make it{" "}
-              <GlossaryTerm id="nonhermitian">non-Hermitian</GlossaryTerm>.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={480}>
-        <Paragraph
-          original="Unlike previous non-Hermitian conformal defects, which remain critical, our defect is perturbed by a classically marginal operator that becomes marginally relevant, generating an integrable defect RG flow."
-          explanation={
-            <>
-              A technical but important distinction: some non-Hermitian models stay
-              scale-invariant forever (nothing flows). This one doesn&apos;t — it has a{" "}
-              <GlossaryTerm id="marginal">marginally relevant operator</GlossaryTerm>, the exact
-              mechanism that also drives the ordinary Kondo effect, giving a genuine, non-trivial
-              RG flow to study.
-            </>
-          }
-        />
-      </Reveal>
-
-      <Reveal delay={520}>
-        <div className="flex flex-col gap-3 rounded-xl border border-line bg-paper-raised p-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-violet-strong">
-            The Hamiltonian, eq. (1) — click any symbol
-          </p>
-          <VariableExplorer />
-          <p className="text-sm leading-relaxed text-ink-soft">
-            This is a{" "}
-            <GlossaryTerm id="chiral">chiral</GlossaryTerm> formulation of a{" "}
-            <GlossaryTerm id="multichannel">multichannel Kondo</GlossaryTerm> model — see{" "}
-            <a href="/experiment" className="text-violet-strong hover:underline">
-              Experiment
-            </a>{" "}
-            for the full walkthrough of why each piece is there.
-          </p>
+      {/* 12 — payoff */}
+      <Reveal delay={300}>
+        <div className="flex flex-col gap-4">
+          <ConceptHeading index={12} total={TOTAL} phrase="Breakdown, understood." color={EMBER} />
+          <Paragraph
+            original="Our exact solution shows, however, that neither a real spectrum nor ultraviolet and infrared defect entropies consistent with defect CFT are sufficient to guarantee RG irreversibility: in the zero-mode phase, the impurity entropy develops intermediate overshoots and undershoots between distinct ultraviolet and infrared fixed-point values, whereas in the local-moment phase it returns to the UV value 2ln2 through intermediate overshoots and undershoots."
+            explanation={
+              <>
+                Here it is. A real spectrum (concept 6) and textbook-correct CFT endpoints (concept 8) turn
+                out <em>not</em> to be enough. Once impurity strings split the spectrum into multiple towers
+                (concept 9), the entropy can genuinely overshoot past its final value, or dip below it, before
+                settling — not a numerical artifact, an exact result. The local-moment phase (concept 10)
+                shows this most dramatically: both endpoints are 2ln2, and the curve still swings wildly in
+                between.
+              </>
+            }
+          />
+          <PaperFigure
+            src="/images/fig4-local-moment.png"
+            width={799}
+            height={528}
+            alt="Figure 4 from the paper: impurity entropy in the local-moment phase, showing a sharp overshoot above ln4 followed by an undershoot below, for three values of alpha"
+            label="Fig. 4"
+            explanation={
+              <>
+                Needed here — this is the single most dramatic overshoot/undershoot in the whole paper.
+                Both endpoints sit at ln4 (=2ln2), yet the blue curve (α=2.75π) swings up almost to ln4×2
+                and back down past zero before returning. That swing is what &ldquo;breakdown of monotonic
+                flow&rdquo; looks like, in one picture.
+              </>
+            }
+          />
         </div>
       </Reveal>
 
@@ -216,12 +331,11 @@ export function Page1Full() {
         <PrereqAndObservations
           prerequisites={[
             "Basic quantum mechanics (spin operators, Hamiltonians) — nothing beyond that is assumed.",
-            "The rest is explained inline via the glossary terms (click any dotted-underline word).",
+            "Everything else is explained inline — click any dotted-underline term, or drag any live control.",
           ]}
           observations={[
-            "The complex-conjugate pairing (λ, λ*) is the one modeling choice that makes everything downstream in the paper possible.",
-            "This is explicitly a chiral, forward-scattering-only formulation — a deliberate simplification made to keep the model exactly solvable.",
-            "The paper's central claim — a real spectrum and correct CFT endpoints are not enough to guarantee monotonic entropy flow — is something you can reproduce yourself in the simulation embedded above.",
+            "α is the same variable throughout this entire site — dragging it here moves it everywhere else too.",
+            "Every image on this page is either the paper's own figure (labeled and explained) or a generated diagram built to fill a gap the paper's figures don't cover.",
           ]}
         />
       </Reveal>
@@ -229,28 +343,26 @@ export function Page1Full() {
       <Reveal delay={140}>
         <TermChips
           terms={[
-            "impurity",
-            "rg",
-            "cft",
-            "wzw",
             "ptsymmetric",
             "nonhermitian",
-            "chiral",
-            "kondo",
             "multichannel",
-            "defect",
-            "marginal",
+            "kondo",
+            "rg",
+            "betheansatz",
+            "ysr",
+            "impuritystring",
+            "tower",
             "gfunction",
             "gtheorem",
-            "nonmonotonic",
+            "tba",
           ]}
         />
       </Reveal>
 
       <Reveal delay={140}>
         <AiTutorPanel
-          sectionName="Page 1"
-          prompt="The reader is on page 1 of the paper: the title, abstract, and introduction, including the Hamiltonian (eq. 1), the four-phase result, the entropy flow values, and the breakdown-of-monotonicity claim. Explain what this page establishes and why the complex-conjugate coupling choice matters, at the requested depth level."
+          sectionName="Page 1 — Abstract"
+          prompt="The reader has just gone through the paper's abstract broken into 13 concepts: the PT-symmetric non-Hermitian model, channel count, complex-conjugate couplings, RG invariants, the four phases, PT breaking, the free energy/g-function, entropy endpoints, tower reorganization, YSR/cyclic flow, the g-theorem conjecture, and the breakdown-of-monotonicity payoff. Explain how these fit together as one continuous argument, at the requested depth level."
         />
       </Reveal>
     </div>
