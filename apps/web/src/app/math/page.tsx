@@ -4,7 +4,7 @@ import { LiveMathReadout } from "@/components/simulation/LiveMathReadout";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 import { VariableExplorer } from "@/components/math/VariableExplorer";
-import { DerivationPlayer } from "@/components/math/DerivationPlayer";
+import { MathProofPlayer } from "@/components/math/MathProofPlayer";
 
 export default function MathPage() {
   return (
@@ -45,7 +45,7 @@ export default function MathPage() {
       </Reveal>
 
       <Reveal delay={160}>
-        <DerivationPlayer />
+        <MathProofPlayer />
       </Reveal>
 
       <Reveal delay={140}>
