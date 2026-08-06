@@ -11,7 +11,7 @@ This directory holds the founding planning docs for the platform, produced in or
 | 3 | [Competitor Analysis](./03-competitor-analysis.md) | Draft |
 | 4 | [User Personas](./04-user-personas.md) | Draft |
 | 5 | [User Journey Maps](./05-user-journey-maps.md) | Draft |
-| 6 | Technical Architecture | Not started |
+| 6 | [Technical Architecture](./06-technical-architecture.md) | Draft |
 | 7 | Database Schema | Not started |
 | 8 | API Design | Not started |
 | 9 | Design System | Not started |
@@ -33,6 +33,8 @@ This directory holds the founding planning docs for the platform, produced in or
 
 - **Publishing model**: no centralized moderation queue blocks publishing. Whoever initiates a post (uploader, or the user who triggers an open-access ingestion) self-reviews the AI-generated draft in their own "Review & Publish" queue and publishes directly. Post-publish trust relies on community flagging, the simulation quality gate, and takedown tooling rather than pre-publish moderation.
 - **Everyone consumes**: creation is a capability layered on every account, not a separate account class — students, engineers, researchers, and professors are all full consumers of the feed by default; creation frequency varies by persona (see Doc 4).
+- **Build approach**: custom TypeScript monorepo (Next.js + tRPC + BullMQ workers + Postgres/pgvector), not a no-code accelerator — full control needed for the feed/swipe interaction model and the simulation engine. See Doc 6.
+- **Simulation generation mechanism**: AI selects from a curated template library and extracts parameters — never generates/executes arbitrary rendering code. This is what makes the quality gate enforceable and is also a security boundary. See Doc 6.
 
 ## Open questions not yet resolved
 
