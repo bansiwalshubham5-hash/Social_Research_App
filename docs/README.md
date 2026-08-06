@@ -39,3 +39,7 @@ This directory holds the founding planning docs for the platform, produced in or
 ## Open questions not yet resolved
 
 - Business model / monetization — explicitly TBD, to be addressed with options in the Roadmap doc.
+
+## Build log
+
+The full-platform planning sequence above paused at Doc 6 in favor of a narrower, deliberately-scoped build: **"The Ultimate Interactive Research Paper Experience (MVP)"** — one real paper (arXiv:2608.04083), taken to the highest possible quality, instead of the whole platform at low fidelity. No auth, feeds, uploads, or social features — see `apps/web` for the live build (home page + Experiment/Simulation/Mathematics/Results/Applications/Original Paper sections). This is a scope narrowing, not a reversal of Docs 1-6's architecture decisions: the same Next.js/TypeScript foundation, the same "quality gate" philosophy (the Simulation section computes a real thermodynamic Bethe Ansatz solution and honestly refuses to plot the PT-broken phase rather than fake it), and the same provenance-transparency principle (the AI Tutor panels are clearly labeled and show an honest "not configured" state without a live API key) all carry forward. Docs 7-16 (Database Schema through Future Roadmap) resume once this single-paper experience validates the approach.
