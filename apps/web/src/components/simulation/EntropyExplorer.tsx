@@ -1,14 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  RotateCcw,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Maximize2,
+  Minimize2,
+  Thermometer,
+} from "lucide-react";
 import {
   loadTbaDataset,
   simp,
   classifyPhase,
   PHASE_LABEL,
+  PHASE_COLOR,
   type TbaDataset,
-  type Phase,
 } from "@/lib/tba";
 import { usePaperState } from "@/lib/paper-state";
 
@@ -17,26 +26,42 @@ const T_MAX_EXP = 6;
 const T_POINTS = 140;
 const LN2 = Math.log(2);
 const LN4 = 2 * LN2;
-
-const PHASE_COLOR: Record<Phase, string> = {
-  kondo: "#6d5ef0",
-  "zero-mode-1": "#2f8fdb",
-  "zero-mode-2": "#0ea5a5",
-  "ysr-1": "#e0524a",
-  "ysr-2": "#e0524a",
-  "local-moment": "#e8a23d",
-};
+const SPEEDS = [0.25, 0.5, 1, 2] as const;
+const STEP = 0.4; // logT units per manual step
 
 function phaseBoundaries(n: number) {
-  const bounds = [
+  return [
     { at: Math.PI / 2, label: "π/2" },
     { at: Math.PI, label: "π" },
+    { at: (n * Math.PI) / 2, label: "nπ/2" },
+    { at: ((n + 1) * Math.PI) / 2, label: "(n+1)π/2" },
+    { at: (n / 2 + 1) * Math.PI, label: "(n/2+1)π" },
   ];
-  if (n >= 3) bounds.push({ at: (n * Math.PI) / 2, label: "nπ/2" });
-  else bounds.push({ at: (n * Math.PI) / 2, label: "nπ/2" });
-  bounds.push({ at: ((n + 1) * Math.PI) / 2, label: "(n+1)π/2" });
-  bounds.push({ at: (n / 2 + 1) * Math.PI, label: "(n/2+1)π" });
-  return bounds;
+}
+
+const SUPERSCRIPT: Record<string, string> = {
+  "0": "⁰",
+  "1": "¹",
+  "2": "²",
+  "3": "³",
+  "4": "⁴",
+  "5": "⁵",
+  "6": "⁶",
+  "7": "⁷",
+  "8": "⁸",
+  "9": "⁹",
+  "-": "⁻",
+};
+function toSuperscript(exp: number) {
+  return String(exp)
+    .split("")
+    .map((c) => SUPERSCRIPT[c] ?? c)
+    .join("");
+}
+function formatT(T: number) {
+  const exp = Math.floor(Math.log10(T));
+  const mantissa = T / Math.pow(10, exp);
+  return `${mantissa.toFixed(2)}×10${toSuperscript(exp)}`;
 }
 
 interface Props {
@@ -47,11 +72,75 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
   const { alpha, n, setAlpha, setN } = usePaperState();
   const [ds, setDs] = useState<TbaDataset | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<{ T: number; S: number | null } | null>(null);
+
+  // ---- playback ("living" T-sweep) ----
+  const [playing, setPlaying] = useState(true);
+  const [speed, setSpeed] = useState<(typeof SPEEDS)[number]>(1);
+  const [playheadLogT, setPlayheadLogT] = useState(T_MAX_EXP);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const directionRef = useRef<-1 | 1>(-1); // -1 = cooling (UV -> IR)
+  const rafRef = useRef<number | null>(null);
+  const lastTsRef = useRef<number | null>(null);
 
   useEffect(() => {
     loadTbaDataset().then(setDs);
   }, []);
+
+  useEffect(() => {
+    if (!playing) {
+      lastTsRef.current = null;
+      return;
+    }
+    function tick(ts: number) {
+      if (lastTsRef.current !== null) {
+        const dt = (ts - lastTsRef.current) / 1000;
+        const rate = 1.4 * speed; // logT units per second at 1x
+        setPlayheadLogT((prev) => {
+          let next = prev + directionRef.current * rate * dt;
+          if (next <= T_MIN_EXP) {
+            next = T_MIN_EXP;
+            directionRef.current = 1;
+          } else if (next >= T_MAX_EXP) {
+            next = T_MAX_EXP;
+            directionRef.current = -1;
+          }
+          return next;
+        });
+      }
+      lastTsRef.current = ts;
+      rafRef.current = requestAnimationFrame(tick);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [playing, speed]);
+
+  useEffect(() => {
+    function onFsChange() {
+      setIsFullscreen(document.fullscreenElement === wrapRef.current);
+    }
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      wrapRef.current?.requestFullscreen();
+    }
+  }, []);
+
+  const step = (dir: -1 | 1) => {
+    setPlayheadLogT((prev) => Math.min(T_MAX_EXP, Math.max(T_MIN_EXP, prev + dir * STEP)));
+  };
+  const resetPlayhead = () => {
+    setPlayheadLogT(T_MAX_EXP);
+    directionRef.current = -1;
+  };
 
   const alphaMax = (n / 2 + 1) * Math.PI + Math.PI;
 
@@ -69,6 +158,9 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
 
   const phase = classifyPhase(alpha, n);
   const isBroken = phase === "ysr-1" || phase === "ysr-2";
+
+  const playheadT = Math.pow(10, playheadLogT);
+  const playheadS = ds ? simp(ds, playheadT, alpha, n) : null;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -97,10 +189,11 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
       PAD_L + ((logT - T_MIN_EXP) / (T_MAX_EXP - T_MIN_EXP)) * (W - PAD_L - PAD_R);
     const yToPx = (s: number) => H - PAD_B - ((s - yMin) / (yMax - yMin)) * (H - PAD_T - PAD_B);
 
-    const style = getComputedStyle(document.documentElement);
+    const style = getComputedStyle(canvas);
     const lineColor = style.getPropertyValue("--line").trim() || "#e3e0ec";
     const inkSoft = style.getPropertyValue("--ink-soft").trim() || "#7a7690";
     const ink = style.getPropertyValue("--ink").trim() || "#15141c";
+    const ember = style.getPropertyValue("--ember").trim() || "#e85d2f";
 
     // gridlines at ln2 and 2ln2
     ctx.strokeStyle = lineColor;
@@ -161,21 +254,45 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
     if (drawing) ctx.stroke();
     else ctx.beginPath(); // clear any stale path (e.g. from axis drawing) so nothing stray gets stroked later
 
-    // hover marker
+    // playhead ("living" sweep position) — always shown when curve is finite there
+    if (playheadS !== null) {
+      const x = xToPx(playheadLogT);
+      const y = yToPx(playheadS);
+      ctx.strokeStyle = ember;
+      ctx.globalAlpha = 0.5;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath();
+      ctx.moveTo(x, PAD_T);
+      ctx.lineTo(x, H - PAD_B);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = ember;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y, 9, 0, Math.PI * 2);
+      ctx.globalAlpha = 0.25;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // hover marker (on-demand, from mouse)
     if (hover && hover.S !== null) {
       const x = xToPx(Math.log10(hover.T));
       const y = yToPx(hover.S);
-      ctx.fillStyle = "#e85d2f";
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fill();
       ctx.fillStyle = ink;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fill();
       ctx.font = "11px ui-monospace, monospace";
       ctx.textAlign = x > W - 90 ? "right" : "left";
       ctx.textBaseline = "bottom";
-      ctx.fillText(`S=${hover.S.toFixed(3)}`, x + (x > W - 90 ? -8 : 8), y - 6);
+      ctx.fillText(`S=${hover.S.toFixed(3)}`, x + (x > W - 90 ? -8 : 8), y - 8);
     }
-  }, [curve, hover, phase]);
+  }, [curve, hover, phase, playheadLogT, playheadS]);
 
   function handlePointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
     const canvas = canvasRef.current;
@@ -194,11 +311,14 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
   const bounds = phaseBoundaries(n);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div
+      ref={wrapRef}
+      className={`flex flex-col gap-5 ${isFullscreen ? "h-full justify-center bg-paper p-6" : ""}`}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-violet-strong">
-            Interactive simulation &middot; exact result, not an animation
+            Interactive simulation &middot; exact result, running live
           </p>
           <h2 className="mt-1 text-xl font-semibold text-ink md:text-2xl">
             Impurity entropy S(T) across the phase diagram
@@ -224,6 +344,11 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
           onPointerMove={handlePointerMove}
           onPointerLeave={() => setHover(null)}
         />
+        <div className="pointer-events-none absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-paper-raised/90 px-2.5 py-1 text-[11px] font-mono text-ink shadow-sm">
+          <Thermometer size={11} className="text-ember" />
+          T/T_K = {formatT(playheadT)}
+          {playheadS !== null && <span className="text-ink-soft">&nbsp;S = {playheadS.toFixed(3)}</span>}
+        </div>
         {isBroken && (
           <div className="pointer-events-none absolute inset-x-4 bottom-4 rounded-lg border border-dashed border-red-400/50 bg-red-500/10 px-3 py-2 text-xs leading-relaxed text-ink-soft">
             <strong className="text-ink">No curve here — by design.</strong> PT symmetry is
@@ -232,6 +357,66 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
             doesn&apos;t apply here — so neither does this plot.
           </div>
         )}
+      </div>
+
+      {/* transport controls — the "living" playback */}
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper-raised px-3 py-2">
+        <button
+          onClick={() => setPlaying((p) => !p)}
+          aria-label={playing ? "Pause" : "Play"}
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-violet text-white transition hover:bg-violet-strong"
+        >
+          {playing ? <Pause size={14} /> : <Play size={14} />}
+        </button>
+        <button
+          onClick={() => step(1)}
+          aria-label="Step backward (warmer)"
+          title="Step backward (warmer)"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition hover:bg-line-soft hover:text-ink"
+        >
+          <SkipBack size={14} />
+        </button>
+        <button
+          onClick={() => step(-1)}
+          aria-label="Step forward (cooler)"
+          title="Step forward (cooler)"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition hover:bg-line-soft hover:text-ink"
+        >
+          <SkipForward size={14} />
+        </button>
+        <button
+          onClick={resetPlayhead}
+          aria-label="Reset to hottest temperature"
+          title="Reset"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition hover:bg-line-soft hover:text-ink"
+        >
+          <RotateCcw size={14} />
+        </button>
+
+        <div className="mx-1 h-5 w-px bg-line" />
+
+        <div className="flex items-center gap-1">
+          {SPEEDS.map((s) => (
+            <button
+              key={s}
+              onClick={() => setSpeed(s)}
+              className={`rounded-full px-2 py-1 text-[11px] font-mono transition ${
+                speed === s ? "bg-violet-soft text-violet-strong" : "text-ink-soft hover:bg-line-soft"
+              }`}
+            >
+              {s}×
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={toggleFullscreen}
+          aria-label="Toggle fullscreen"
+          title="Fullscreen"
+          className="ml-auto flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition hover:bg-line-soft hover:text-ink"
+        >
+          {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+        </button>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -245,7 +430,7 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
               className="flex items-center gap-1 text-ink-soft hover:text-ink"
               aria-label="Reset alpha"
             >
-              <RotateCcw size={12} /> reset
+              <RotateCcw size={12} /> reset α
             </button>
           </div>
           <input
@@ -290,6 +475,8 @@ export function EntropyExplorer({ variant = "embedded" }: Props) {
 
       {variant === "full" && (
         <p className="text-xs leading-relaxed text-ink-soft">
+          The orange dot is the system cooling in real time — watch it sweep from the hot,
+          free-spin regime on the right toward absolute zero on the left, then reheat and repeat.
           Drag α slowly from 0: the curve decays smoothly from 2 ln 2 (top dashed line) to a
           lower plateau — the ordinary, monotonic Kondo effect. Past α = π/2 the same UV and IR
           values connect through a visible dip or bump instead of a smooth slide — extra

@@ -55,6 +55,15 @@ export const PHASE_LABEL: Record<Phase, string> = {
   "local-moment": "Local moment phase",
 };
 
+export const PHASE_COLOR: Record<Phase, string> = {
+  kondo: "#6d5ef0",
+  "zero-mode-1": "#2f8fdb",
+  "zero-mode-2": "#0ea5a5",
+  "ysr-1": "#e0524a",
+  "ysr-2": "#e0524a",
+  "local-moment": "#e8a23d",
+};
+
 // ---- tiny complex helpers (only what we need) ----
 type C = [number, number]; // [re, im]
 const cAdd = (a: C, b: C): C => [a[0] + b[0], a[1] + b[1]];

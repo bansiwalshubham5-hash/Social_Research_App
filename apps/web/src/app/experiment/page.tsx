@@ -1,5 +1,5 @@
 import { SectionShell, Prose } from "@/components/SectionShell";
-import { HeroIllustration } from "@/components/HeroIllustration";
+import { CinematicScene } from "@/components/CinematicScene";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 
 const STEPS = [
@@ -24,8 +24,8 @@ const STEPS = [
 export default function ExperimentPage() {
   return (
     <SectionShell eyebrow="Section ① — Experiment" title="The setup, exactly as the paper defines it">
-      <div className="mx-auto aspect-square w-full max-w-xs">
-        <HeroIllustration />
+      <div className="dark mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-paper">
+        <CinematicScene />
       </div>
 
       <Prose>
