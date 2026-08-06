@@ -31,8 +31,9 @@ A social platform where the unit of content is a **Post**: one research paper or
 4. **Generate visuals** (medium-confidence): diagrams/illustrations of concepts. Attempted per-concept, not forced platform-wide.
 5. **Generate simulation** (quality-gated): a *feasibility classifier* decides whether the paper's subject matter maps to a supported simulation type (initially: mechanics, circuits, waves, thermo, EM, control systems). If yes, generate a parametrized interactive sim. If no — or if generated but fails a correctness self-check — no simulation page is created, rather than shipping a wrong one. This is the single most important quality gate in the product.
 6. **Assemble**: pages ordered into a draft Post.
-7. **Review gate**: draft lands in the uploader's "Review & Publish" queue — they can edit/remove/reorder any AI page before it goes live.
-   - Default for open-access-ingested papers with no platform-native uploader: publish as a system-authored post, clearly labeled (e.g. "Auto-generated from arXiv:2xxx.xxxxx — unclaimed"), with a "claim this paper" flow for the real author to take ownership later. **Open item**: confirm whether ingestion should instead require human review before *any* publish, including open-access ones, before this is finalized.
+7. **Review gate — confirmed**: no centralized moderation queue blocks publishing. The person who *initiated* the post (the uploader for author-uploaded material, or the user who triggered an open-access ingestion) lands in their own "Review & Publish" queue, can edit/remove/reorder any AI-generated page, and publishes directly — self-review by the creator, not a platform gatekeeper. This applies uniformly across both content tracks (§4): every post has an initiating account responsible for reviewing it before it goes live, even when the underlying source material is open-access.
+   - Consequence for §4: open-access ingestion is not "system-authored with no owner" — it's attributed to whichever user triggered the ingestion, who is accountable for reviewing it, same as any other uploader. The "claim this paper" flow still matters for the *original real-world author* (e.g., the professor who wrote the paper) to later take formal ownership if someone else ingested their work, but it is a re-attribution flow, not a review gate.
+   - Trust implication: since there's no moderation backstop before publish, post-publish signals (community flagging, the simulation quality gate in step 5, and rapid takedown/correction tooling) carry more weight — detailed further in the Security Plan (Doc 12) and Risk Analysis (Doc 14).
 
 **Path B — Manual creation**: a structured editor lets a user build the same page stack directly — upload their own images/diagrams, write explanations, embed a dataset/graph, attach a PDF, and (P1, not P0) configure a simulation from a template rather than generate one. This is the escape valve when AI generation is weak or wrong, and how users without a "paper" (e.g., a professor building a teaching post) participate.
 
@@ -89,5 +90,4 @@ Monetization has not been decided. It's carried as an open question into the MVP
 
 ## Open items carried forward
 
-- Review-gate default for open-access-ingested posts (§3.2) — needs explicit confirmation.
 - Business model (§6) — TBD, to be addressed with options in the Roadmap doc.

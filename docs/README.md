@@ -31,7 +31,8 @@ This directory holds the founding planning docs for the platform, produced in or
 - **Content/IP**: both author-uploaded (rights-attestation) and open-access-ingested (arXiv/PMC-style OA sources) tracks, clearly labeled and separated.
 - **Simulation quality gate**: no simulation page is shown rather than a wrong one — feasibility/correctness gating, not "always attempt something."
 
+- **Publishing model**: no centralized moderation queue blocks publishing. Whoever initiates a post (uploader, or the user who triggers an open-access ingestion) self-reviews the AI-generated draft in their own "Review & Publish" queue and publishes directly. Post-publish trust relies on community flagging, the simulation quality gate, and takedown tooling rather than pre-publish moderation.
+
 ## Open questions not yet resolved
 
-- Review-gate default for open-access-ingested posts (auto-publish as "unclaimed/system-authored" vs. requiring human review before any publish) — see PRD §3.2.
 - Business model / monetization — explicitly TBD, to be addressed with options in the Roadmap doc.
