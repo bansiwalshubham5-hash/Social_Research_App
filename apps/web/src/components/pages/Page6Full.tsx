@@ -1,5 +1,6 @@
 import { DepthBadge, Paragraph, PrereqAndObservations, TermChips } from "./PageChrome";
 import { ReferenceExplorer } from "./refs/ReferenceExplorer";
+import { ReferenceNetworkDiagram } from "./refs/ReferenceNetworkDiagram";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -35,6 +36,15 @@ export function Page6Full() {
           original="Acknowledgments: We thank Colin Rylands for his careful review of the manuscript and for his valuable comments and insightful discussions. This work was supported by the Swiss National Science Foundation under Division II (Grant No. 200020-219400)."
           explanation="Already shown in full on page 5 — repeated here because this is genuinely where it sits in the paper, right before the reference list itself."
         />
+      </Reveal>
+
+      <Reveal delay={100}>
+        <div>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            The same 30 references, as a network
+          </p>
+          <ReferenceNetworkDiagram />
+        </div>
       </Reveal>
 
       <Reveal delay={120}>

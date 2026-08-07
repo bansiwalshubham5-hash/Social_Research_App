@@ -2,10 +2,11 @@ import { DepthBadge, Paragraph, PrereqAndObservations, TermChips } from "./PageC
 import { GlossaryTerm } from "./GlossaryTerm";
 import { ConceptHeading } from "./abstract/ConceptHeading";
 import { ColorCodedEquation } from "./abstract/ColorCodedEquation";
-import { KernelShapePlot } from "./tba/KernelShapePlot";
+import { KernelFunctionGraph } from "./tba/KernelFunctionGraph";
 import { UniversalSolutionCurve } from "./tba/UniversalSolutionCurve";
 import { KernelNarrowingSlider } from "./tba/KernelNarrowingSlider";
 import { TowerSplitDiagram } from "./tba/TowerSplitDiagram";
+import { LiveEntropyGraph } from "./shared/LiveEntropyGraph";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -55,7 +56,7 @@ export function Page3Full() {
               </>
             }
           />
-          <KernelShapePlot />
+          <KernelFunctionGraph />
         </div>
       </Reveal>
 
@@ -118,6 +119,14 @@ export function Page3Full() {
               { label: "cosα · cosh(...)", color: EMBER, desc: "the α-dependent kernel — this is what narrows as α grows" },
               { label: "ln[1+η₁(ξ)]", color: VIOLET, desc: "the single-tower TBA solution, concept 3's η_p at p=1" },
             ]}
+          />
+          <LiveEntropyGraph
+            n={2}
+            defaultAlphaOverPi={0.2}
+            minAlphaOverPi={0.02}
+            maxAlphaOverPi={0.49}
+            accent={TEAL}
+            caption="This is eq. (15) itself, evaluated live — the entropy is -dF_imp/dT of the exact formula above, computed fresh at every α you pick."
           />
         </div>
       </Reveal>

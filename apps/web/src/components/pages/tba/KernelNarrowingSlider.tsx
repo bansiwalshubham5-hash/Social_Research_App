@@ -2,22 +2,29 @@
 
 import { useState } from "react";
 
-// A draggable widen/narrow kernel — distinct from KernelShapePlot's static
-// picture: this one is specifically about how the SAME kernel's width
-// changes as alpha sweeps toward pi/2, using a slider rather than a static
-// snapshot.
+// A draggable widen/narrow kernel — distinct from KernelFunctionGraph's fixed
+// alpha-slider-over-xi picture: this one fixes the alpha RANGE (0 to just
+// under pi/2) and lets you scrub across it to watch the whole shape morph in
+// one continuous drag. Uses the same exact closed-form kernel from eq. (15),
+// K(xi,a) = cos(a)*cosh(xi) / (cosh^2(xi) - sin^2(a)) — not an approximation.
 export function KernelNarrowingSlider() {
   const [alphaFrac, setAlphaFrac] = useState(0.3);
-  const width = 1 - alphaFrac * 0.92;
+  const alpha = alphaFrac * 0.499 * Math.PI;
+  const cosA = Math.cos(alpha);
+  const sin2A = Math.sin(alpha) ** 2;
 
   const W = 260;
   const H = 90;
   const pts: string[] = [];
+  const peak = cosA / (1 - sin2A); // K(0, alpha)
+  const yMax = Math.min(peak, 10);
   for (let i = 0; i <= 60; i++) {
     const t = i / 60;
     const x = t * (W - 20) + 10;
     const lam = (t - 0.5) * 8;
-    const y = H - 10 - (1 / Math.cosh((Math.PI * lam) / width)) * (H - 20) * 3.2;
+    const kRaw = (cosA * Math.cosh(lam)) / (Math.cosh(lam) ** 2 - sin2A);
+    const kClamped = Math.min(kRaw, yMax);
+    const y = H - 10 - (kClamped / yMax) * (H - 20);
     pts.push(`${x},${Math.max(6, y)}`);
   }
 

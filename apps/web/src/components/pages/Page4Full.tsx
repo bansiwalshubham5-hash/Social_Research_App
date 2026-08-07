@@ -6,6 +6,8 @@ import { PaperFigure } from "./PaperFigure";
 import { ConjugatePairMirror } from "./towers/ConjugatePairMirror";
 import { ModulusSquaredDiagram } from "./towers/ModulusSquaredDiagram";
 import { ThreeTowerSplit } from "./towers/ThreeTowerSplit";
+import { DerivationSteps } from "./shared/DerivationSteps";
+import { LiveEntropyGraph } from "./shared/LiveEntropyGraph";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -62,6 +64,14 @@ export function Page4Full() {
             alt="Figure 2 from the paper: impurity entropy S_imp vs T/T_K for the Kondo phase, left panel showing several alpha values with specific heat inset, right panel showing different channel numbers at fixed alpha"
             label="Fig. 2"
             explanation="Needed here — this is the paper's own numerical evaluation of the exact formula from page 3, the direct visual proof that the single-tower Kondo phase behaves exactly as concepts 2-5 (pages 2-3) predicted."
+          />
+          <LiveEntropyGraph
+            n={2}
+            defaultAlphaOverPi={0.25}
+            minAlphaOverPi={0.02}
+            maxAlphaOverPi={0.49}
+            accent={VIOLET}
+            caption="Fig. 2's left panel, but live — drag α and reproduce the paper's own numerical figure yourself, computed fresh from this platform's TBA solver rather than pre-rendered."
           />
         </div>
       </Reveal>
@@ -136,6 +146,15 @@ export function Page4Full() {
             explanation="Concept 3's mirror symmetry, carried all the way through: impurity 2's partition function is impurity 1's complex conjugate, so their product is a modulus-squared — always real, always positive, no matter how complex the intermediate towers get."
           />
           <ModulusSquaredDiagram />
+          <DerivationSteps
+            accent={EMBER}
+            steps={[
+              { expr: "Z_imp,(2)(T) = Z_imp,(1)(T)*", note: "PT symmetry (page 1, concept 1) relates impurity 2's partition function to impurity 1's — concept 3's mirror, restated for the full partition function rather than a single tower." },
+              { expr: "Z_imp(T) = Z_imp,(1)(T) · Z_imp,(2)(T) = Z_imp,(1)(T) · Z_imp,(1)(T)*", note: "Independent impurities multiply (concept 4)." },
+              { expr: "for any complex z:  z·z* = |z|²  ⇒  Z_imp = |Z_imp,(1)|²", note: "The defining property of a modulus-squared — real and non-negative, no matter how complex z itself is." },
+              { expr: "⇒ F_imp(T) = −T ln Z_imp(T) = −T ln|Z_imp,(1)(T)|²  is real", note: "The paper's claim, now literally derived: individual towers can be complex, but the observable free energy never is." },
+            ]}
+          />
         </div>
       </Reveal>
 

@@ -10,6 +10,8 @@ import { ComplexPlaneToggle } from "./abstract/ComplexPlaneToggle";
 import { TowerStepper } from "./abstract/TowerStepper";
 import { CyclicFlowDiagram } from "./abstract/CyclicFlowDiagram";
 import { EntropyEndpointsSparkline } from "./abstract/EntropyEndpointsSparkline";
+import { DerivationSteps } from "./shared/DerivationSteps";
+import { LiveEntropyGraph } from "./shared/LiveEntropyGraph";
 import { DefectFlowDiagram } from "./intro/DefectFlowDiagram";
 import { ChiralDefectPlane } from "./intro/ChiralDefectPlane";
 import { FrameworkTagCloud } from "./intro/FrameworkTagCloud";
@@ -75,6 +77,15 @@ export function Page1Full() {
             }
           />
           <NonHermitianIllustration />
+          <DerivationSteps
+            accent={VIOLET}
+            steps={[
+              { expr: "H_int = λ S₁·J(x₁) + λ* S₂·J(x₂)", note: "Start from the interaction term alone — the kinetic term is symmetric under both operations below by the ring geometry (intro concept 7)." },
+              { expr: "P: S₁↔S₂, x₁↔x₂  ⇒  H_int → λ S₂·J(x₂) + λ* S₁·J(x₁)", note: "Parity exchanges the two impurities' labels and positions." },
+              { expr: "T: complex-conjugate c-numbers (λ→λ*), operators S, J unchanged\n  ⇒  (λ S₂·J(x₂) + λ* S₁·J(x₁))* = λ* S₂·J(x₂) + λ S₁·J(x₁)", note: "Time reversal is antiunitary — it conjugates numbers but not the Hermitian spin/current operators themselves." },
+              { expr: "PT: λ* S₂·J(x₂) + λ S₁·J(x₁) = λ S₁·J(x₁) + λ* S₂·J(x₂) = H_int  ✓", note: "Reorder the sum — it's identical to where we started. H_int is exactly PT-invariant, and only because impurity 2's coupling is impurity 1's complex conjugate." },
+            ]}
+          />
         </div>
       </Reveal>
 
@@ -246,6 +257,14 @@ export function Page1Full() {
             }
           />
           <EntropyEndpointsSparkline />
+          <LiveEntropyGraph
+            n={4}
+            defaultAlphaOverPi={0.25}
+            minAlphaOverPi={0.02}
+            maxAlphaOverPi={0.49}
+            accent={EMBER}
+            caption="The real S_imp(T) curve for the Kondo phase — not a sketch. Every point is this platform's own TBA solver, called live as you drag α. Watch it always land on 2ln2 at the far left and the smaller n-dependent plateau at the far right, no matter where α sits."
+          />
         </div>
       </Reveal>
 

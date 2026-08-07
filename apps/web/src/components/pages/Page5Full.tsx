@@ -5,6 +5,7 @@ import { PaperFigure } from "./PaperFigure";
 import { NumericVsExactBadge } from "./results2/NumericVsExactBadge";
 import { OvershootMagnitudeChart } from "./results2/OvershootMagnitudeChart";
 import { ResultsChecklist } from "./results2/ResultsChecklist";
+import { LiveEntropyGraph } from "./shared/LiveEntropyGraph";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -111,6 +112,14 @@ export function Page5Full() {
             explanation="Page 1 (concept 12) already showed Fig. 4's actual curves. Here's the same data from a different angle: how the size of the overshoot and undershoot changes across the three α values the paper plots."
           />
           <OvershootMagnitudeChart />
+          <LiveEntropyGraph
+            n={4}
+            defaultAlphaOverPi={3.4}
+            minAlphaOverPi={3.02}
+            maxAlphaOverPi={4.3}
+            accent={EMBER}
+            caption="The local-moment window (α past (n/2+1)π=3π for n=4), live. Both endpoints sit at exactly 2ln2 no matter where you drag α — and the curve still visibly dips away from that flat line in between, this platform's own solver confirming the same qualitative overshoot/undershoot as Fig. 4 above. (That figure's own dramatic swing is at a different n and α than this slider reaches — shown here as the paper's own numerics, not reproduced live, to keep this graph's every point exact.)"
+          />
         </div>
       </Reveal>
 

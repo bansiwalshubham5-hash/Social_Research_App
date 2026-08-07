@@ -9,6 +9,8 @@ import { ZeroModeSubphaseAccordion } from "./phase/ZeroModeSubphaseAccordion";
 import { YSREnergyLevelDiagram } from "./phase/YSREnergyLevelDiagram";
 import { VanishingEnergyDiagram } from "./phase/VanishingEnergyDiagram";
 import { TBARecursionChain } from "./phase/TBARecursionChain";
+import { DerivationSteps } from "./shared/DerivationSteps";
+import { LiveEntropyGraph } from "./shared/LiveEntropyGraph";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -91,6 +93,14 @@ export function Page2Full() {
             }
           />
           <MonotonicDecayCurve />
+          <LiveEntropyGraph
+            n={3}
+            defaultAlphaOverPi={0.2}
+            minAlphaOverPi={0.02}
+            maxAlphaOverPi={0.49}
+            accent={EMBER}
+            caption="Restricted to the Kondo window, 0<α<π/2 — the real TBA curve, live. Drag α anywhere in this range and it stays monotonic every time, exactly as claimed."
+          />
         </div>
       </Reveal>
 
@@ -112,6 +122,14 @@ export function Page2Full() {
             }
           />
           <CurveShapeCompare />
+          <LiveEntropyGraph
+            n={3}
+            defaultAlphaOverPi={0.7}
+            minAlphaOverPi={0.02}
+            maxAlphaOverPi={1.49}
+            accent={TEAL}
+            caption="Now drag past α=0.5π yourself — the same live TBA curve, but this slider spans both the Kondo and zero-mode windows so you can watch monotonic tip into nonmonotonic in real time, not just compare two frozen snapshots."
+          />
         </div>
       </Reveal>
 
@@ -151,6 +169,16 @@ export function Page2Full() {
               { label: "∏δ≠γ (Λδ−Λγ±ic)", color: "var(--ink-soft)", desc: "rapidity-rapidity scattering — the ordinary bulk interaction" },
               { label: "impurity 1 factor", color: VIOLET, desc: "scattering off impurity 1, with coupling c̃ = ce^(iφ)" },
               { label: "impurity 2 factor", color: EMBER, desc: "scattering off impurity 2, with coupling c̃* = ce^(−iφ) — the complex conjugate" },
+            ]}
+          />
+          <DerivationSteps
+            accent={VIOLET}
+            steps={[
+              { expr: "c̃ = c e^(iφ)          c̃* = c e^(−iφ)", note: "The effective couplings from the introduction (concept 9, page 1) — magnitude c, phase φ." },
+              { expr: "Set φ = 0:  e^(iφ) = e^(−iφ) = e⁰ = 1", note: "The paper's stated special case." },
+              { expr: "⇒  c̃ = c          c̃* = c", note: "Both impurities' effective couplings collapse to the same real number c — the complex-conjugate pair (page 1, concept 1) becomes one ordinary coupling." },
+              { expr: "⇒ impurity 1 and impurity 2 factors above become identical in form", note: "The two scattering factors in the equations differ only by c̃ vs c̃* — with both equal to c, that distinction vanishes." },
+              { expr: "⇒ the ordinary Hermitian two-impurity multichannel Kondo Bethe equations", note: "Exactly the paper's own statement: φ=0 is the non-Hermitian twist switched off." },
             ]}
           />
         </div>

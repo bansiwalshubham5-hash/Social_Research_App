@@ -6,6 +6,7 @@ import { SMatrixScatteringDiagram } from "./proof/SMatrixScatteringDiagram";
 import { SpectralParameterDial } from "./proof/SpectralParameterDial";
 import { YangBaxterBraidDiagram } from "./proof/YangBaxterBraidDiagram";
 import { MonodromyChainDiagram } from "./proof/MonodromyChainDiagram";
+import { DerivationSteps } from "./shared/DerivationSteps";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -138,6 +139,16 @@ export function Page7Full() {
             legend={[
               { label: "Ξ(u)Ξ(v)", color: VIOLET, desc: "monodromy matrices at two different spectral parameters" },
               { label: "Ξ(v)Ξ(u)", color: EMBER, desc: "the same product, reversed — related by conjugation with R" },
+            ]}
+          />
+          <DerivationSteps
+            accent={EMBER}
+            steps={[
+              { expr: "Yang-Baxter (eq. 26):\n  S_kj(u−v)S_ki(u)S_ji(v) = S_ji(v)S_ki(u)S_kj(u−v)", note: "The one algebraic condition proved to hold in concept 3 — everything below is a repackaging of it." },
+              { expr: "define R ≡ S(u−v)P\n  ⇒  R·Ξ(u)Ξ(v) = Ξ(v)Ξ(u)·R", note: "Yang-Baxter for individual S-matrices lifts to the same relation for the full monodromy matrices Ξ(u), Ξ(v) built from them (concept 4)." },
+              { expr: "R is invertible\n  ⇒  Ξ(u)Ξ(v) = R⁻¹·Ξ(v)Ξ(u)·R", note: "Multiply both sides by R⁻¹ on the left." },
+              { expr: "T(u) ≡ Tr_a Ξ(u)\n  Tr_a[Ξ(u)Ξ(v)] = Tr_a[R⁻¹·Ξ(v)Ξ(u)·R] = Tr_a[Ξ(v)Ξ(u)]", note: "Trace both sides over the auxiliary space. Cyclicity of the trace, Tr(R⁻¹AR)=Tr(A), erases the R⁻¹…R conjugation completely." },
+              { expr: "⇒  T(u)T(v) = T(v)T(u)  ⇒  [T(u), T(v)] = 0", note: "Exactly the paper's eq. (33) — the infinite family of conserved transfer-matrix quantities, all mutually commuting." },
             ]}
           />
         </div>

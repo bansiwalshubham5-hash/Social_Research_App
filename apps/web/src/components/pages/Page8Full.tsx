@@ -4,6 +4,7 @@ import { ConceptHeading } from "./abstract/ConceptHeading";
 import { ColorCodedEquation } from "./abstract/ColorCodedEquation";
 import { VariableShiftDiagram } from "./finalbethe/VariableShiftDiagram";
 import { FusionDiagram } from "./finalbethe/FusionDiagram";
+import { DerivationSteps } from "./shared/DerivationSteps";
 import { AiTutorPanel } from "@/components/ai/AiTutorPanel";
 import { Reveal } from "@/components/Reveal";
 
@@ -74,6 +75,16 @@ export function Page8Full() {
             explanation="One relabeling, purely for tidiness — but it's exactly this cleaned-up form that appears in every equation from page 2 onward. Toggle below to see the offset simplify."
           />
           <VariableShiftDiagram />
+          <DerivationSteps
+            accent={EMBER}
+            steps={[
+              { expr: "e^(ik_jL) = ∏ (Λγ−1+ice^(iφ)/2)/(Λγ−1−ice^(iφ)/2)", note: "Concept 1's raw, un-tidied equation." },
+              { expr: "substitute  Λγ − 1 → e^(iφ)(Λγ − 1)", note: "The paper's stated relabeling." },
+              { expr: "numerator:  e^(iφ)(Λγ−1) + ice^(iφ)/2 = e^(iφ)[(Λγ−1) + ic/2]\ndenominator: e^(iφ)(Λγ−1) − ice^(iφ)/2 = e^(iφ)[(Λγ−1) − ic/2]", note: "Factor e^(iφ) out of both terms in each bracket — it's common to every term because ic·e^(iφ)/2 = e^(iφ)·(ic/2)." },
+              { expr: "e^(iφ)[(Λγ−1)+ic/2] / e^(iφ)[(Λγ−1)−ic/2] = (Λγ−1+ic/2)/(Λγ−1−ic/2)", note: "The e^(iφ) factor is common to numerator and denominator — it cancels exactly." },
+              { expr: "⇒  e^(ik_jL) = ∏ (Λγ−1+ic/2)/(Λγ−1−ic/2)", note: "Eq. (37)'s clean, symmetric ±ic/2 form — the φ-dependence has been absorbed entirely into the relabeled Λγ." },
+            ]}
+          />
         </div>
       </Reveal>
 
