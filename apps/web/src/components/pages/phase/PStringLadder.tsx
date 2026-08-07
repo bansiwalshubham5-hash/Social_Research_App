@@ -35,7 +35,7 @@ export function PStringLadder() {
         <circle cx={cx} cy={cy} r={3} fill="var(--violet)" stroke="var(--paper-raised)" strokeWidth={1.5} />
         <line x1={30} y1={122} x2={cx - 6} y2={cy + 6} stroke="var(--violet)" strokeWidth={0.8} opacity={0.5} />
         <text x={28} y={132} textAnchor="start" fontSize="9" fill="var(--violet-strong)" fontFamily="ui-monospace, monospace">
-          Λ&#7413;⁽ᵖ⁾ (string center)
+          Λ⁽ᵖ⁾ (string center)
         </text>
       </svg>
       <div className="flex items-center gap-2">
