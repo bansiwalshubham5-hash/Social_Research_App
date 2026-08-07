@@ -10,9 +10,13 @@ import { ComplexPlaneToggle } from "./abstract/ComplexPlaneToggle";
 import { TowerStepper } from "./abstract/TowerStepper";
 import { CyclicFlowDiagram } from "./abstract/CyclicFlowDiagram";
 import { EntropyEndpointsSparkline } from "./abstract/EntropyEndpointsSparkline";
+import { ComplexConjugatePair } from "./abstract/ComplexConjugatePair";
+import { OneWayStreetDiagram } from "./abstract/OneWayStreetDiagram";
 import { DerivationSteps } from "./shared/DerivationSteps";
 import { LiveEntropyGraph } from "./shared/LiveEntropyGraph";
+import { SimpleExplainer } from "./shared/SimpleExplainer";
 import { DefectFlowDiagram } from "./intro/DefectFlowDiagram";
+import { HamiltonianAnatomy } from "./intro/HamiltonianAnatomy";
 import { ChiralDefectPlane } from "./intro/ChiralDefectPlane";
 import { FrameworkTagCloud } from "./intro/FrameworkTagCloud";
 import { CriticalVsFlowingCompare } from "./intro/CriticalVsFlowingCompare";
@@ -86,6 +90,14 @@ export function Page1Full() {
               { expr: "PT: λ* S₂·J(x₂) + λ S₁·J(x₁) = λ S₁·J(x₁) + λ* S₂·J(x₂) = H_int  ✓", note: "Reorder the sum — it's identical to where we started. H_int is exactly PT-invariant, and only because impurity 2's coupling is impurity 1's complex conjugate." },
             ]}
           />
+          <SimpleExplainer accent={VIOLET}>
+            Imagine two tiny magnets dropped into a river of flowing electrons. Ordinarily, physics
+            insists a system can&apos;t leak energy in or out — but here we let it (that&apos;s what
+            &ldquo;non-Hermitian&rdquo; means). To keep the math from spinning out of control, we build in
+            one balance rule: whatever leaks out on one magnet&apos;s side leaks in on the other&apos;s, in
+            a mirror-image way. That balance is called PT-symmetry, and it&apos;s the one trick that lets
+            an otherwise &ldquo;leaky&rdquo; system still be solved exactly, start to finish.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -135,6 +147,13 @@ export function Page1Full() {
               { label: "λ*", color: EMBER, desc: "impurity 2's coupling — the complex conjugate of λ" },
             ]}
           />
+          <ComplexConjugatePair />
+          <SimpleExplainer accent={TEAL}>
+            A complex number is just an ordinary number plus a &ldquo;direction&rdquo; — you can draw it as
+            an arrow on a compass instead of a single point on a line. &ldquo;Complex conjugate&rdquo; just
+            means: flip the arrow to its mirror image across the flat, horizontal line. That&apos;s
+            literally the whole idea in the picture above — nothing more exotic than a reflection.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -154,6 +173,13 @@ export function Page1Full() {
             }
           />
           <RGFlowBar />
+          <SimpleExplainer accent={VIOLET}>
+            Think of T_K as a thermostat setting — the rough temperature where &ldquo;something
+            interesting starts happening&rdquo; to the impurities. α is a separate dial, starting at 0, that
+            just says how far this system has been pushed from ordinary, energy-conserving physics.
+            Both numbers stay fixed as you change the temperature — only the impurities&apos; behavior
+            changes around them.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -187,6 +213,13 @@ export function Page1Full() {
               </>
             }
           />
+          <SimpleExplainer accent={EMBER}>
+            As you turn the α dial up from zero, the system clicks through four different
+            &ldquo;moods,&rdquo; like a thermostat with four settings: first ordinary screening (Kondo),
+            then a stranger in-between mode (zero mode), then a mode where energies stop being ordinary
+            real numbers (YSR), and finally a mode where the magnets give up on being screened at all
+            (local moment).
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -207,6 +240,13 @@ export function Page1Full() {
             }
           />
           <ComplexPlaneToggle />
+          <SimpleExplainer accent={TEAL}>
+            &ldquo;Unbroken&rdquo; means: even though this system can leak energy in and out, the leaking
+            cancels out perfectly, so every measurable energy still comes out as an ordinary real number
+            — nothing you&apos;d call &ldquo;strange&rdquo; on a lab readout. &ldquo;Broken&rdquo; means that
+            cancellation fails and energies actually become complex numbers — a genuine physical
+            difference, not a bookkeeping quirk.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -237,6 +277,13 @@ export function Page1Full() {
               { label: "ln[1+η₁(ξ)]", color: VIOLET, desc: "the TBA solution — solved numerically, validated against closed-form limits" },
             ]}
           />
+          <SimpleExplainer accent={VIOLET}>
+            Free energy is one number that captures &ldquo;how much useful order is left&rdquo; in the
+            impurities at a given temperature — lower means more settled, higher means more up-for-grabs.
+            The g-function is the same idea, restated as an entropy: a score that starts high (the
+            impurities could be in any of many states) and drops as cooling forces them into fewer and
+            fewer possibilities.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -265,6 +312,13 @@ export function Page1Full() {
             accent={EMBER}
             caption="The real S_imp(T) curve for the Kondo phase — not a sketch. Every point is this platform's own TBA solver, called live as you drag α. Watch it always land on 2ln2 at the far left and the smaller n-dependent plateau at the far right, no matter where α sits."
           />
+          <SimpleExplainer accent={EMBER}>
+            ln2 is just a way of counting &ldquo;how many equally-likely options are there&rdquo; — a coin
+            has 2 sides, so it carries &ldquo;ln2&rdquo; worth of not-knowing-which-side-is-up. Two
+            independent coins carry 2×ln2. As you cool this system, the electrons pin down more and more
+            of what state the impurities are in, so that &ldquo;not-knowing&rdquo; number shrinks — landing
+            on a smaller, precise value that depends on how many channels (n) surround the impurities.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -283,6 +337,13 @@ export function Page1Full() {
             }
           />
           <TowerStepper />
+          <SimpleExplainer accent={TEAL}>
+            A &ldquo;string&rdquo; here is just a bundle of rapidities (numbers that label a particle&apos;s
+            momentum-like quantum state) locked together like beads on a thread, evenly spaced. A
+            &ldquo;tower&rdquo; is the whole family of allowed bundles for one type of excitation — one
+            filing cabinet for one kind of particle-bundle. Past α=π/2, a brand-new kind of bundle appears
+            that costs exactly zero energy to create, and it needs its own separate filing cabinet.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -301,22 +362,31 @@ export function Page1Full() {
             }
           />
           <CyclicFlowDiagram />
+          <SimpleExplainer accent={VIOLET}>
+            &ldquo;Cyclic RG flow&rdquo; means the system doesn&apos;t end up anywhere new as you cool it
+            down — it starts at one state, wanders off temporarily as temperature drops, and comes right
+            back to that same starting state. It&apos;s a loop, not a one-way trip from A to B.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
       {/* 11 */}
       <Reveal delay={280}>
-        <Paragraph
-          original="We conjecture that RG irreversibility, and hence a generalized Affleck–Ludwig g-theorem, survives throughout the Kondo phase 0 < α < π/2, where excitations remain organized into a single tower."
-          explanation={
-            <>
-              A conjecture, stated as one — the authors are careful not to claim a proof. The ordinary{" "}
-              <GlossaryTerm id="gtheorem">g-theorem</GlossaryTerm> (entropy only ever decreases on cooling)
-              plausibly survives exactly as long as there&apos;s only a single excitation tower doing the
-              work — i.e., before concept 9&apos;s reorganization kicks in.
-            </>
-          }
-        />
+        <div className="flex flex-col gap-4">
+          <Paragraph
+            original="We conjecture that RG irreversibility, and hence a generalized Affleck–Ludwig g-theorem, survives throughout the Kondo phase 0 < α < π/2, where excitations remain organized into a single tower."
+            explanation={
+              <>
+                A conjecture, stated as one — the authors are careful not to claim a proof. The ordinary{" "}
+                <GlossaryTerm id="gtheorem">g-theorem</GlossaryTerm> (entropy only ever decreases on
+                cooling, never rises back up) plausibly survives exactly as long as there&apos;s only a
+                single excitation tower doing the work — i.e., before concept 9&apos;s reorganization
+                kicks in.
+              </>
+            }
+          />
+          <OneWayStreetDiagram />
+        </div>
       </Reveal>
 
       {/* 12 — payoff */}
@@ -351,6 +421,13 @@ export function Page1Full() {
               </>
             }
           />
+          <SimpleExplainer accent={EMBER}>
+            Picture a hiking trail that starts at height 2ln2 and ends at height 2ln2 again — flat
+            overall, start to finish. You&apos;d guess &ldquo;nothing happened along the way.&rdquo; This
+            paper shows the trail can secretly climb over a hill and dip into a valley in between, even
+            though the start and end heights match exactly. That hidden hill-and-valley, hiding behind an
+            apparently flat start-to-end trip, is what &ldquo;breakdown&rdquo; means in the title.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -381,6 +458,13 @@ export function Page1Full() {
             }
           />
           <DefectFlowDiagram />
+          <SimpleExplainer accent={VIOLET}>
+            A &ldquo;defect&rdquo; is just a special point — here, one location on a ring — where the rules
+            are different from everywhere else, like one odd square on an otherwise ordinary chessboard.
+            As you zoom out (cool the system), what that odd square &ldquo;looks like&rdquo; from far away
+            can change — a free, undecided spin at high energy settling into a screened, quieter spin at
+            low energy.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -400,6 +484,11 @@ export function Page1Full() {
             }
           />
           <ChiralDefectPlane />
+          <SimpleExplainer accent={EMBER}>
+            WZW is just the name of a specific, thoroughly-studied rulebook for how a bunch of electrons
+            behave collectively. Physicists reach for it here because, unlike most rulebooks for
+            many-particle systems, this particular one can be solved exactly — no approximations needed.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -449,6 +538,14 @@ export function Page1Full() {
             }
           />
           <OperatorRelevanceSpectrum />
+          <SimpleExplainer accent={EMBER}>
+            Physics has a rough scorecard for any small extra ingredient you add to a system: as you zoom
+            out, does it matter more, less, or exactly the same? &ldquo;Marginal&rdquo; means the simplest
+            version of the scorecard reads &ldquo;exactly the same — a coin flip.&rdquo; But once quantum
+            corrections are included, the coin flip tips one way, toward &ldquo;matters more.&rdquo; That
+            tip is what makes the impurity actually latch onto the electrons instead of staying decoupled
+            forever.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -479,6 +576,14 @@ export function Page1Full() {
             tokens={[{ text: "J(x) = ½ Σₐ ψ†ₐα(x) σαβ ψₐβ(x)" }]}
             legend={[{ label: "J(x)", color: "var(--ink-soft)", desc: "the SU(2)ₙ current — the total electron spin density at position x, summed over all n channels" }]}
           />
+          <HamiltonianAnatomy />
+          <SimpleExplainer accent={TEAL}>
+            Read the equation as three pieces added together: (1) the electrons quietly flowing around a
+            ring by themselves, (2) impurity 1 reaching into that flow and tugging on it with strength λ,
+            and (3) impurity 2 doing the same with the mirror-image strength λ*. Nothing more exotic is
+            happening — it&apos;s &ldquo;free electrons&rdquo; plus &ldquo;two tiny magnets, each pulling on
+            the current.&rdquo;
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -511,6 +616,12 @@ export function Page1Full() {
             }
           />
           <SolutionPipelineDiagram />
+          <SimpleExplainer accent={EMBER}>
+            Think of it as an assembly line. Start with the exact equations for the particles&apos;
+            positions and momenta (the Bethe Ansatz). Turn the crank to add in temperature (the
+            thermodynamic Bethe Ansatz). Out the other end come two numbers you can actually plot: the
+            free energy, and the g-function.
+          </SimpleExplainer>
         </div>
       </Reveal>
 
@@ -554,6 +665,7 @@ export function Page1Full() {
           observations={[
             "α is the same variable throughout this entire site — dragging it here moves it everywhere else too.",
             "Every image on this page is either the paper's own figure (labeled and explained) or a generated diagram built to fill a gap the paper's figures don't cover.",
+            "Every concept that leans on jargon gets a violet/ember/teal \"In plain words\" box in addition to its precise explanation — the technical track is never watered down, the simple track is just added alongside it.",
           ]}
         />
       </Reveal>
